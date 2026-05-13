@@ -1,0 +1,1159 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cotizador de Programas · CREO de Creer y Crear</title>
+  <meta name="description" content="Cotiza tu programa integral de salud mental y educación socioemocional con CREO de Creer y Crear." />
+  <link rel="icon" href="https://creodecreerycrear.cl/wp-content/uploads/2024/06/cropped-icono-270x270.png" />
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet" />
+
+  <!-- Tabler Icons -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.19.0/dist/tabler-icons.min.css" />
+
+  <!-- jsPDF -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --or: #E8631A;
+      --or-light: #FDF0E8;
+      --or-mid: #F5A06A;
+      --or-dark: #B84D12;
+      --teal: #1D9E75;
+      --teal-light: #E1F5EE;
+      --blue-dark: #2D3A6E;
+      --gray-bg: #F7F6F2;
+      --gray-border: #E2E0D8;
+      --gray-text: #6B6860;
+      --text: #1C1C1C;
+      --white: #FFFFFF;
+      --radius: 12px;
+      --radius-sm: 8px;
+      --shadow: 0 2px 12px rgba(0,0,0,0.07);
+      --shadow-lg: 0 8px 32px rgba(0,0,0,0.10);
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Nunito', sans-serif;
+      background: var(--gray-bg);
+      color: var(--text);
+      min-height: 100vh;
+    }
+
+    /* ── TOP BAR ── */
+    .topbar {
+      background: var(--white);
+      border-bottom: 1px solid var(--gray-border);
+      padding: 0 24px;
+      height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .topbar-brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+    }
+    .topbar-logo {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      background: var(--or);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      font-weight: 800;
+      color: white;
+      flex-shrink: 0;
+    }
+    .topbar-name {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--text);
+      line-height: 1.2;
+    }
+    .topbar-sub {
+      font-size: 11px;
+      color: var(--gray-text);
+    }
+    .topbar-link {
+      font-size: 13px;
+      color: var(--or);
+      text-decoration: none;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .topbar-link:hover { text-decoration: underline; }
+
+    /* ── LAYOUT ── */
+    .page {
+      max-width: 760px;
+      margin: 0 auto;
+      padding: 32px 20px 60px;
+    }
+
+    /* ── PROGRESS STEPS ── */
+    .progress-bar {
+      display: flex;
+      align-items: center;
+      margin-bottom: 32px;
+    }
+    .step-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex: 1;
+    }
+    .step-item:last-child { flex: 0; }
+    .step-circle {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: var(--gray-border);
+      color: var(--gray-text);
+      font-size: 13px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      transition: all 0.2s;
+    }
+    .step-circle.active { background: var(--or); color: white; }
+    .step-circle.done { background: var(--teal); color: white; }
+    .step-circle.done::after { content: '✓'; }
+    .step-circle.done span { display: none; }
+    .step-label-text {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--gray-text);
+      white-space: nowrap;
+    }
+    .step-label-text.active { color: var(--or); }
+    .step-label-text.done { color: var(--teal); }
+    .step-line {
+      flex: 1;
+      height: 2px;
+      background: var(--gray-border);
+      margin: 0 8px;
+      transition: background 0.2s;
+    }
+    .step-line.done { background: var(--teal); }
+
+    /* ── SECTION HEADER ── */
+    .section-label {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--gray-text);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin-bottom: 6px;
+    }
+    .section-title {
+      font-size: 26px;
+      font-weight: 800;
+      color: var(--text);
+      margin-bottom: 20px;
+      line-height: 1.2;
+    }
+
+    /* ── TABS ── */
+    .tabs {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 20px;
+      background: var(--white);
+      border: 1px solid var(--gray-border);
+      border-radius: var(--radius);
+      padding: 6px;
+    }
+    .tab-btn {
+      flex: 1;
+      padding: 10px 16px;
+      border-radius: var(--radius-sm);
+      border: none;
+      background: transparent;
+      color: var(--gray-text);
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.15s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      font-family: 'Nunito', sans-serif;
+    }
+    .tab-btn.active {
+      background: var(--or);
+      color: white;
+      box-shadow: 0 2px 8px rgba(232,99,26,0.3);
+    }
+    .tab-btn i { font-size: 16px; }
+
+    /* ── INFO BOX ── */
+    .info-box {
+      background: var(--or-light);
+      border: 1px solid var(--or-mid);
+      border-radius: var(--radius-sm);
+      padding: 12px 16px;
+      font-size: 13px;
+      color: #7A3A10;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      line-height: 1.5;
+    }
+    .info-box i { font-size: 16px; flex-shrink: 0; margin-top: 1px; }
+
+    /* ── PROGRAM CARDS ── */
+    .prog-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+    .prog-card {
+      background: var(--white);
+      border: 1.5px solid var(--gray-border);
+      border-radius: var(--radius);
+      padding: 16px 18px;
+      cursor: pointer;
+      transition: all 0.15s;
+      position: relative;
+    }
+    .prog-card:hover { border-color: var(--or-mid); box-shadow: var(--shadow); }
+    .prog-card.selected {
+      border-color: var(--or);
+      background: var(--or-light);
+      box-shadow: 0 0 0 3px rgba(232,99,26,0.12);
+    }
+    .prog-card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 8px;
+    }
+    .prog-name {
+      font-size: 15px;
+      font-weight: 800;
+      color: var(--text);
+    }
+    .prog-disc-badge {
+      font-size: 12px;
+      font-weight: 700;
+      background: #E8F5E9;
+      color: #1B5E20;
+      padding: 3px 10px;
+      border-radius: 20px;
+      flex-shrink: 0;
+    }
+    .prog-items {
+      font-size: 12px;
+      color: var(--gray-text);
+      line-height: 1.8;
+      margin-bottom: 10px;
+    }
+    .prog-item-tag {
+      display: inline-block;
+      background: #F0F0EC;
+      border-radius: 4px;
+      padding: 1px 7px;
+      margin: 2px 2px 2px 0;
+      font-size: 11px;
+      color: var(--gray-text);
+    }
+    .prog-card.selected .prog-item-tag { background: rgba(232,99,26,0.12); color: var(--or-dark); }
+    .prog-price-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .prog-orig { font-size: 13px; color: #AAAAAA; text-decoration: line-through; }
+    .prog-final { font-size: 18px; font-weight: 800; color: var(--or); }
+    .prog-saving { font-size: 11px; color: var(--teal); font-weight: 700; }
+    .check-icon {
+      position: absolute;
+      top: 14px;
+      right: 14px;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background: var(--or);
+      display: none;
+      align-items: center;
+      justify-content: center;
+    }
+    .prog-card.selected .check-icon { display: flex; }
+    .check-icon i { font-size: 13px; color: white; }
+
+    /* ── SERVICE CARDS ── */
+    .svc-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+    .svc-card {
+      background: var(--white);
+      border: 1.5px solid var(--gray-border);
+      border-radius: var(--radius);
+      padding: 14px;
+      cursor: pointer;
+      position: relative;
+      transition: all 0.15s;
+    }
+    .svc-card:hover { border-color: var(--or-mid); box-shadow: var(--shadow); }
+    .svc-card.selected {
+      border-color: var(--or);
+      background: var(--or-light);
+      box-shadow: 0 0 0 3px rgba(232,99,26,0.12);
+    }
+    .svc-icon-wrap {
+      width: 38px;
+      height: 38px;
+      border-radius: 10px;
+      background: var(--gray-bg);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 10px;
+      transition: background 0.15s;
+    }
+    .svc-card.selected .svc-icon-wrap { background: var(--or); }
+    .svc-icon-wrap i { font-size: 20px; color: var(--gray-text); }
+    .svc-card.selected .svc-icon-wrap i { color: white; }
+    .svc-name { font-size: 13px; font-weight: 700; color: var(--text); margin-bottom: 4px; line-height: 1.3; }
+    .svc-desc { font-size: 11px; color: var(--gray-text); line-height: 1.5; margin-bottom: 8px; }
+    .svc-price { font-size: 14px; font-weight: 700; color: var(--text); }
+    .svc-card.selected .svc-price { color: var(--or); }
+    .qty-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 10px;
+    }
+    .qty-btn {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      border: 1.5px solid var(--gray-border);
+      background: var(--white);
+      cursor: pointer;
+      font-size: 16px;
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      font-family: 'Nunito', sans-serif;
+      transition: border-color 0.15s;
+    }
+    .qty-btn:hover { border-color: var(--or); color: var(--or); }
+    .qty-num { font-size: 14px; font-weight: 700; min-width: 22px; text-align: center; }
+    .qty-unit { font-size: 11px; color: var(--gray-text); }
+
+    /* ── SELECTION BAR ── */
+    .sel-bar {
+      background: var(--or);
+      color: white;
+      border-radius: var(--radius-sm);
+      padding: 12px 16px;
+      font-size: 14px;
+      font-weight: 700;
+      margin-bottom: 16px;
+      display: none;
+      align-items: center;
+      gap: 8px;
+    }
+    .sel-bar i { font-size: 18px; }
+
+    /* ── FORM ── */
+    .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+    .form-group { display: flex; flex-direction: column; gap: 5px; margin-bottom: 4px; }
+    .form-label { font-size: 13px; font-weight: 700; color: var(--text); }
+    .form-label span { color: var(--or); }
+    input[type="text"],
+    input[type="email"],
+    textarea,
+    select {
+      width: 100%;
+      padding: 10px 14px;
+      border: 1.5px solid var(--gray-border);
+      border-radius: var(--radius-sm);
+      font-size: 14px;
+      font-family: 'Nunito', sans-serif;
+      color: var(--text);
+      background: var(--white);
+      transition: border-color 0.15s;
+      outline: none;
+    }
+    input:focus, textarea:focus, select:focus { border-color: var(--or); box-shadow: 0 0 0 3px rgba(232,99,26,0.12); }
+    textarea { resize: vertical; min-height: 90px; }
+    .form-full { grid-column: 1 / -1; }
+
+    /* ── BUTTONS ── */
+    .btn-row { display: flex; gap: 10px; margin-top: 24px; }
+    .btn-primary {
+      flex: 1;
+      padding: 13px 20px;
+      border-radius: var(--radius);
+      border: none;
+      background: var(--or);
+      color: white;
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      font-family: 'Nunito', sans-serif;
+      transition: background 0.15s, box-shadow 0.15s;
+      box-shadow: 0 4px 14px rgba(232,99,26,0.3);
+    }
+    .btn-primary:hover { background: var(--or-dark); box-shadow: 0 6px 18px rgba(232,99,26,0.4); }
+    .btn-secondary {
+      padding: 13px 20px;
+      border-radius: var(--radius);
+      border: 1.5px solid var(--gray-border);
+      background: var(--white);
+      color: var(--text);
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-family: 'Nunito', sans-serif;
+      transition: border-color 0.15s;
+    }
+    .btn-secondary:hover { border-color: var(--gray-text); }
+    .btn-pdf {
+      flex: 1;
+      padding: 13px 20px;
+      border-radius: var(--radius);
+      border: none;
+      background: var(--teal);
+      color: white;
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      font-family: 'Nunito', sans-serif;
+      transition: background 0.15s;
+      box-shadow: 0 4px 14px rgba(29,158,117,0.3);
+    }
+    .btn-pdf:hover { background: #0F7A5A; }
+    .btn-pdf:disabled { opacity: 0.6; cursor: not-allowed; }
+
+    /* ── PREVIEW ── */
+    .preview-card {
+      background: var(--white);
+      border: 1.5px solid var(--gray-border);
+      border-radius: var(--radius);
+      padding: 28px;
+      margin-bottom: 20px;
+      box-shadow: var(--shadow);
+    }
+    .preview-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      padding-bottom: 18px;
+      margin-bottom: 18px;
+      border-bottom: 1.5px solid var(--gray-border);
+    }
+    .preview-brand-name { font-size: 17px; font-weight: 800; color: var(--text); }
+    .preview-brand-sub { font-size: 11px; color: var(--gray-text); margin-top: 3px; }
+    .cot-badge {
+      background: var(--or-light);
+      color: var(--or-dark);
+      font-size: 12px;
+      font-weight: 700;
+      padding: 5px 12px;
+      border-radius: 20px;
+      text-align: right;
+    }
+    .preview-to-label { font-size: 11px; color: var(--gray-text); margin-bottom: 4px; }
+    .preview-to-name { font-size: 16px; font-weight: 800; color: var(--text); }
+    .preview-to-sub { font-size: 12px; color: var(--gray-text); margin-top: 2px; }
+    .preview-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 18px;
+      font-size: 13px;
+    }
+    .preview-table th {
+      text-align: left;
+      font-weight: 700;
+      color: var(--gray-text);
+      padding: 6px 0;
+      border-bottom: 1.5px solid var(--gray-border);
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    .preview-table td {
+      padding: 9px 0;
+      border-bottom: 1px solid var(--gray-border);
+      color: var(--text);
+      vertical-align: top;
+    }
+    .preview-table tr:last-child td { border-bottom: none; }
+    .total-section {
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+      gap: 12px;
+      margin-top: 18px;
+      padding-top: 16px;
+      border-top: 1.5px solid var(--gray-border);
+      flex-wrap: wrap;
+    }
+    .total-orig { font-size: 14px; color: #AAAAAA; text-decoration: line-through; }
+    .total-disc { background: #E8F5E9; color: #1B5E20; font-size: 12px; font-weight: 700; padding: 3px 10px; border-radius: 20px; }
+    .total-final { font-size: 22px; font-weight: 800; color: var(--or); }
+    .preview-footer {
+      margin-top: 18px;
+      padding-top: 14px;
+      border-top: 1px solid var(--gray-border);
+      font-size: 11px;
+      color: var(--gray-text);
+      line-height: 1.6;
+    }
+    .preview-notes {
+      background: var(--gray-bg);
+      border-radius: var(--radius-sm);
+      padding: 12px 14px;
+      margin-top: 14px;
+    }
+    .preview-notes-label { font-size: 11px; font-weight: 700; color: var(--gray-text); margin-bottom: 4px; text-transform: uppercase; letter-spacing: 0.05em; }
+    .preview-notes-text { font-size: 13px; color: var(--text); line-height: 1.5; }
+    .pdf-msg { font-size: 13px; color: var(--gray-text); text-align: center; margin-top: 12px; min-height: 20px; }
+    .pdf-msg.success { color: var(--teal); font-weight: 700; }
+    .pdf-msg.error { color: #C0392B; }
+
+    /* ── STEP VIEWS ── */
+    .step-view { display: none; }
+    .step-view.active { display: block; }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 520px) {
+      .form-grid { grid-template-columns: 1fr; }
+      .svc-grid { grid-template-columns: 1fr 1fr; }
+      .section-title { font-size: 22px; }
+      .tabs { flex-direction: column; }
+      .preview-header { flex-direction: column; gap: 12px; }
+      .page { padding: 20px 14px 50px; }
+      .topbar-sub { display: none; }
+    }
+    @media (max-width: 380px) {
+      .svc-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- TOP BAR -->
+<header class="topbar">
+  <a href="https://creodecreerycrear.cl" class="topbar-brand" target="_blank" rel="noopener">
+    <div class="topbar-logo">C</div>
+    <div>
+      <div class="topbar-name">CREO de Creer y Crear</div>
+      <div class="topbar-sub">Impulsores de la salud mental y emocional</div>
+    </div>
+  </a>
+  <a href="https://creodecreerycrear.cl/contacto/" class="topbar-link" target="_blank" rel="noopener">
+    <i class="ti ti-mail"></i> Contacto
+  </a>
+</header>
+
+<!-- MAIN -->
+<main class="page">
+
+  <!-- PROGRESS -->
+  <nav class="progress-bar" aria-label="Progreso de cotización">
+    <div class="step-item">
+      <div class="step-circle active" id="circle-0"><span>1</span></div>
+      <div class="step-label-text active" id="label-0">Servicios</div>
+    </div>
+    <div class="step-line" id="line-0"></div>
+    <div class="step-item">
+      <div class="step-circle" id="circle-1"><span>2</span></div>
+      <div class="step-label-text" id="label-1">Datos</div>
+    </div>
+    <div class="step-line" id="line-1"></div>
+    <div class="step-item">
+      <div class="step-circle" id="circle-2"><span>3</span></div>
+      <div class="step-label-text" id="label-2">Cotización</div>
+    </div>
+  </nav>
+
+  <!-- PASO 1: SELECCIÓN -->
+  <section class="step-view active" id="step-0">
+    <div class="section-label">Paso 1 de 3</div>
+    <h1 class="section-title">¿Qué programa necesitas?</h1>
+
+    <div class="tabs" role="tablist">
+      <button class="tab-btn active" id="tab-prog" onclick="setTab('prog')" role="tab" aria-selected="true">
+        <i class="ti ti-package"></i> Programas integrales
+      </button>
+      <button class="tab-btn" id="tab-ind" onclick="setTab('ind')" role="tab" aria-selected="false">
+        <i class="ti ti-list-check"></i> Servicios individuales
+      </button>
+    </div>
+
+    <!-- Programas -->
+    <div id="view-prog">
+      <div class="info-box">
+        <i class="ti ti-discount-2"></i>
+        <span>Los programas integrales incluyen descuentos de hasta el 45%. Empresa con giro exento de IVA · Certificación ATE Mineduc · Mercado Público</span>
+      </div>
+      <div class="prog-grid" id="prog-list"></div>
+    </div>
+
+    <!-- Individuales -->
+    <div id="view-ind" style="display:none">
+      <div class="info-box">
+        <i class="ti ti-info-circle"></i>
+        <span>Arma tu propio programa. Al combinar más servicios puedes obtener hasta 45% de descuento. Los precios son referenciales y exentos de IVA.</span>
+      </div>
+      <div class="svc-grid" id="svc-list"></div>
+    </div>
+
+    <div class="sel-bar" id="sel-bar" role="status">
+      <i class="ti ti-check"></i>
+      <span id="sel-bar-text"></span>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn-primary" onclick="goStep(1)">
+        Ingresar datos <i class="ti ti-arrow-right"></i>
+      </button>
+    </div>
+  </section>
+
+  <!-- PASO 2: DATOS -->
+  <section class="step-view" id="step-1">
+    <div class="section-label">Paso 2 de 3</div>
+    <h2 class="section-title">Datos del establecimiento</h2>
+
+    <div class="form-grid">
+      <div class="form-group">
+        <label class="form-label" for="f-name">Nombre del contacto <span>*</span></label>
+        <input type="text" id="f-name" placeholder="Ej: María González" autocomplete="name" />
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="f-inst">Establecimiento <span>*</span></label>
+        <input type="text" id="f-inst" placeholder="Ej: Colegio San José" />
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="f-email">Email <span>*</span></label>
+        <input type="email" id="f-email" placeholder="contacto@colegio.cl" autocomplete="email" />
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="f-phone">Teléfono</label>
+        <input type="text" id="f-phone" placeholder="+56 9 0000 0000" autocomplete="tel" />
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="f-city">Comuna</label>
+        <input type="text" id="f-city" placeholder="Ej: Valparaíso" />
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="f-students">N° de estudiantes aprox.</label>
+        <input type="text" id="f-students" placeholder="Ej: 300" />
+      </div>
+      <div class="form-group form-full">
+        <label class="form-label" for="f-notes">Notas o requerimientos especiales</label>
+        <textarea id="f-notes" placeholder="Fechas, temáticas específicas, necesidades especiales, traslados..."></textarea>
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="f-val">Validez de la cotización</label>
+        <select id="f-val">
+          <option value="15">15 días</option>
+          <option value="30" selected>30 días</option>
+          <option value="60">60 días</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn-secondary" onclick="goStep(0)">
+        <i class="ti ti-arrow-left"></i> Volver
+      </button>
+      <button class="btn-primary" onclick="goStep(2)">
+        Vista previa <i class="ti ti-arrow-right"></i>
+      </button>
+    </div>
+  </section>
+
+  <!-- PASO 3: PREVIEW -->
+  <section class="step-view" id="step-2">
+    <div class="section-label">Paso 3 de 3</div>
+    <h2 class="section-title">Tu cotización</h2>
+
+    <div class="preview-card" id="preview-card">
+      <div class="preview-header">
+        <div>
+          <div class="preview-brand-name">CREO de Creer y Crear SpA</div>
+          <div class="preview-brand-sub">contacto@creodecreerycrear.cl · +56 9 4410 6015 · +56 9 3232 5296</div>
+          <div class="preview-brand-sub" id="p-fecha"></div>
+        </div>
+        <div style="text-align:right">
+          <div class="cot-badge" id="p-num">COT-000000</div>
+          <div style="font-size:11px;color:var(--gray-text);margin-top:4px" id="p-valid"></div>
+        </div>
+      </div>
+
+      <div>
+        <div class="preview-to-label">Cotización para:</div>
+        <div class="preview-to-name" id="p-name"></div>
+        <div class="preview-to-sub" id="p-inst"></div>
+        <div class="preview-to-sub" id="p-info"></div>
+      </div>
+
+      <table class="preview-table">
+        <thead>
+          <tr>
+            <th>Descripción</th>
+            <th style="text-align:center;width:50px">Cant.</th>
+            <th style="text-align:right;width:110px">P. Unitario</th>
+            <th style="text-align:right;width:110px">Total</th>
+          </tr>
+        </thead>
+        <tbody id="p-rows"></tbody>
+      </table>
+
+      <div class="total-section" id="p-total-section"></div>
+
+      <div id="p-notes-wrap" style="display:none">
+        <div class="preview-notes">
+          <div class="preview-notes-label">Notas</div>
+          <div class="preview-notes-text" id="p-notes"></div>
+        </div>
+      </div>
+
+      <div class="preview-footer">
+        <strong>Empresa con giro exento de IVA</strong> · Registro y Certificación ATE Mineduc vigente · Inscrita en Mercado Público · Certificado de Derechos Intelectuales<br>
+        Todos los programas incluyen equipo multidisciplinario, amplificación de sonido profesional y registro audiovisual en alta calidad.
+      </div>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn-secondary" onclick="goStep(1)">
+        <i class="ti ti-arrow-left"></i> Editar
+      </button>
+      <button class="btn-pdf" id="btn-pdf" onclick="genPDF()">
+        <i class="ti ti-file-download"></i> Descargar PDF
+      </button>
+    </div>
+    <p class="pdf-msg" id="pdf-msg" aria-live="polite"></p>
+  </section>
+
+</main>
+
+<script>
+// ── DATA ──────────────────────────────────────────────────────────────
+const programs = [
+  {id:'p1', name:'Programa Intervención Doble', disc:20, orig:1100000, final:880000,
+   items:['2 Conferencias Educartísticas']},
+  {id:'p2', name:'Programa Intervención Avanzada', disc:25, orig:1500000, final:1125000,
+   items:['2 Conferencias Educartísticas','3 Talleres Socioemocionales']},
+  {id:'p3', name:'Programa Integral Avanzado', disc:30, orig:1800000, final:1260000,
+   items:['2 Conferencias Educartísticas','4 Talleres Socioemocionales','10 Pausas Activas']},
+  {id:'p4', name:'Programa Integral Full', disc:30, orig:2290000, final:1603000,
+   items:['2 Conferencias Educartísticas','5 Talleres Socioemocionales','10 Pausas Activas','1 Jornada de Autocuidado']},
+  {id:'p5', name:'Programa Integral Premium', disc:35, orig:2920000, final:1898000,
+   items:['2 Conferencias Educartísticas','6 Talleres Socioemocionales','20 Pausas Activas','1 Jornada de Autocuidado','1 Capacitación o Coaching']},
+  {id:'p6', name:'Programa Integral Supremo', disc:35, orig:4060000, final:2639000,
+   items:['3 Conferencias Educartísticas','7 Talleres Socioemocionales','25 Pausas Activas','2 Jornadas de Autocuidado','1 Capacitación o Coaching']},
+  {id:'p7', name:'Programa Integral Elevado', disc:40, orig:6290000, final:3774000,
+   items:['4 Conferencias Educartísticas','8 Talleres Socioemocionales','25 Pausas Activas','2 Jornadas de Autocuidado','2 Capacitaciones o Coaching','1 Súper Recreo Interactivo','1 Jingle o Campaña Promocional']},
+  {id:'p8', name:'Programa Integral Máster', disc:40, orig:7790000, final:4674000,
+   items:['4 Conferencias Educartísticas','10 Talleres Socioemocionales','30 Pausas Activas','2 Jornadas de Autocuidado','2 Capacitaciones o Coaching','2 Súper Recreos Interactivos','1 Congreso o Seminario','1 Jingle o Campaña Promocional']},
+  {id:'p9', name:'Programa Integral Magnánimo', disc:45, orig:11250000, final:6187500,
+   items:['5 Conferencias Educartísticas','12 Talleres Socioemocionales','40 Pausas Activas','3 Jornadas de Autocuidado','3 Capacitaciones o Coaching','3 Súper Recreos Interactivos','1 Congreso o Seminario','1 Jingle o Campaña Promocional','1 Festival de Talentos']},
+];
+
+const services = [
+  {id:1, icon:'ti-microphone', name:'Conferencia Educartística', desc:'Freestyle, beatbox y canciones para potenciar habilidades socioemocionales', price:550000, unit:'función'},
+  {id:2, icon:'ti-users', name:'Taller Socioemocional', desc:'Autoestima, motivación, convivencia y liderazgo. Alineado IDPS MINEDUC', price:80000, unit:'taller'},
+  {id:3, icon:'ti-activity', name:'Pausa Activa', desc:'Intervención breve con movimiento, relajación y arte', price:25000, unit:'sesión'},
+  {id:4, icon:'ti-heart', name:'Jornada de Autocuidado', desc:'Bienestar emocional y relacional para equipos docentes', price:350000, unit:'jornada'},
+  {id:5, icon:'ti-school', name:'Capacitación o Coaching', desc:'Formación docente en aspectos pedagógicos, emocionales y sociales', price:250000, unit:'sesión'},
+  {id:6, icon:'ti-run', name:'Súper Recreo Interactivo', desc:'Estaciones temáticas lúdicas que transforman el recreo', price:280000, unit:'jornada'},
+  {id:7, icon:'ti-presentation', name:'Congreso o Seminario', desc:'Jornadas formativas con expertos y dinámicas artísticas', price:600000, unit:'evento'},
+  {id:8, icon:'ti-music', name:'Jingle o Campaña Promocional', desc:'Canción personalizada, grabación profesional y videoclip original', price:490000, unit:'proyecto'},
+  {id:9, icon:'ti-trophy', name:'Festival de Talentos', desc:'Evento de expresión artística por categorías de edad con premios', price:550000, unit:'evento'},
+];
+
+// ── STATE ─────────────────────────────────────────────────────────────
+let mode = 'prog';
+let selProg = null;
+let selInd = {};
+let currentStep = 0;
+
+// ── HELPERS ───────────────────────────────────────────────────────────
+const clp = n => '$' + Math.round(n).toLocaleString('es-CL');
+const saving = (orig, final) => clp(orig - final) + ' de ahorro';
+
+// ── RENDER ────────────────────────────────────────────────────────────
+function renderPrograms() {
+  document.getElementById('prog-list').innerHTML = programs.map(p => `
+    <div class="prog-card${selProg === p.id ? ' selected' : ''}" onclick="pickProg('${p.id}')" tabindex="0" role="button" aria-pressed="${selProg === p.id}">
+      <div class="check-icon"><i class="ti ti-check"></i></div>
+      <div class="prog-card-header">
+        <div class="prog-name">${p.name}</div>
+        <div class="prog-disc-badge">−${p.disc}%</div>
+      </div>
+      <div class="prog-items">
+        ${p.items.map(i => `<span class="prog-item-tag">${i}</span>`).join('')}
+      </div>
+      <div class="prog-price-row">
+        <span class="prog-orig">${clp(p.orig)}</span>
+        <span class="prog-final">${clp(p.final)}</span>
+        <span class="prog-saving">${saving(p.orig, p.final)}</span>
+      </div>
+    </div>`).join('');
+}
+
+function renderServices() {
+  document.getElementById('svc-list').innerHTML = services.map(s => `
+    <div class="svc-card${selInd[s.id] ? ' selected' : ''}" onclick="toggleSvc(${s.id})" tabindex="0" role="button" aria-pressed="${!!selInd[s.id]}">
+      <div class="check-icon"><i class="ti ti-check"></i></div>
+      <div class="svc-icon-wrap"><i class="ti ${s.icon}"></i></div>
+      <div class="svc-name">${s.name}</div>
+      <div class="svc-desc">${s.desc}</div>
+      <div class="svc-price">${clp(s.price)} / ${s.unit}</div>
+      ${selInd[s.id] ? `
+        <div class="qty-row">
+          <button class="qty-btn" onclick="chqty(event,${s.id},-1)" aria-label="Reducir cantidad">−</button>
+          <span class="qty-num">${selInd[s.id]}</span>
+          <button class="qty-btn" onclick="chqty(event,${s.id},1)" aria-label="Aumentar cantidad">+</button>
+          <span class="qty-unit">${s.unit}${selInd[s.id] > 1 ? 's' : ''}</span>
+        </div>` : ''}
+    </div>`).join('');
+}
+
+function updateBar() {
+  const bar = document.getElementById('sel-bar');
+  const txt = document.getElementById('sel-bar-text');
+  if (mode === 'prog') {
+    if (selProg) {
+      const p = programs.find(x => x.id === selProg);
+      bar.style.display = 'flex';
+      txt.textContent = p.name + ' · ' + clp(p.final);
+    } else {
+      bar.style.display = 'none';
+    }
+  } else {
+    const n = Object.keys(selInd).length;
+    const t = Object.entries(selInd).reduce((a, [id, q]) => a + services.find(x => x.id == id).price * q, 0);
+    if (n > 0) {
+      bar.style.display = 'flex';
+      txt.textContent = n + ' servicio' + (n > 1 ? 's' : '') + ' · Total: ' + clp(t);
+    } else {
+      bar.style.display = 'none';
+    }
+  }
+}
+
+function renderAll() {
+  renderPrograms();
+  renderServices();
+  updateBar();
+}
+
+// ── INTERACTIONS ──────────────────────────────────────────────────────
+function setTab(t) {
+  mode = t;
+  selProg = null;
+  selInd = {};
+  document.getElementById('tab-prog').className = 'tab-btn' + (t === 'prog' ? ' active' : '');
+  document.getElementById('tab-ind').className = 'tab-btn' + (t === 'ind' ? ' active' : '');
+  document.getElementById('view-prog').style.display = t === 'prog' ? 'block' : 'none';
+  document.getElementById('view-ind').style.display = t === 'ind' ? 'block' : 'none';
+  renderAll();
+}
+
+function pickProg(id) {
+  selProg = selProg === id ? null : id;
+  renderPrograms();
+  updateBar();
+}
+
+function toggleSvc(id) {
+  selInd[id] ? delete selInd[id] : (selInd[id] = 1);
+  renderServices();
+  updateBar();
+}
+
+function chqty(e, id, delta) {
+  e.stopPropagation();
+  selInd[id] = Math.max(1, (selInd[id] || 1) + delta);
+  renderServices();
+  updateBar();
+}
+
+// ── NAVIGATION ────────────────────────────────────────────────────────
+function goStep(n) {
+  if (n === 1) {
+    if (mode === 'prog' && !selProg) { alert('Por favor selecciona un programa.'); return; }
+    if (mode === 'ind' && Object.keys(selInd).length === 0) { alert('Por favor selecciona al menos un servicio.'); return; }
+  }
+  if (n === 2) {
+    const name = document.getElementById('f-name').value.trim();
+    const inst = document.getElementById('f-inst').value.trim();
+    const email = document.getElementById('f-email').value.trim();
+    if (!name) { alert('El nombre del contacto es obligatorio.'); return; }
+    if (!inst) { alert('El nombre del establecimiento es obligatorio.'); return; }
+    if (!email || !email.includes('@')) { alert('Ingresa un email válido.'); return; }
+    buildPreview();
+  }
+
+  // Update progress UI
+  const circles = [0, 1, 2];
+  circles.forEach(i => {
+    const c = document.getElementById('circle-' + i);
+    const l = document.getElementById('label-' + i);
+    c.className = 'step-circle' + (i < n ? ' done' : i === n ? ' active' : '');
+    l.className = 'step-label-text' + (i < n ? ' done' : i === n ? ' active' : '');
+    if (i < n) { c.innerHTML = ''; } else { c.innerHTML = '<span>' + (i + 1) + '</span>'; }
+    if (i < 2) {
+      document.getElementById('line-' + i).className = 'step-line' + (i < n ? ' done' : '');
+    }
+  });
+
+  document.getElementById('step-' + currentStep).classList.remove('active');
+  currentStep = n;
+  document.getElementById('step-' + currentStep).classList.add('active');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// ── PREVIEW ───────────────────────────────────────────────────────────
+function buildPreview() {
+  const name = document.getElementById('f-name').value.trim();
+  const inst = document.getElementById('f-inst').value.trim();
+  const email = document.getElementById('f-email').value.trim();
+  const phone = document.getElementById('f-phone').value.trim();
+  const city = document.getElementById('f-city').value.trim();
+  const students = document.getElementById('f-students').value.trim();
+  const notes = document.getElementById('f-notes').value.trim();
+  const val = document.getElementById('f-val').value;
+  const now = new Date();
+  const exp = new Date(now.getTime() + val * 86400000);
+  const fd = d => d.toLocaleDateString('es-CL', { day: '2-digit', month: '2-digit', year: 'numeric' });
+  const cotN = 'COT-' + now.getTime().toString().slice(-6);
+
+  document.getElementById('p-num').textContent = cotN;
+  document.getElementById('p-fecha').textContent = 'Fecha de emisión: ' + fd(now);
+  document.getElementById('p-valid').textContent = 'Válida hasta: ' + fd(exp);
+  document.getElementById('p-name').textContent = name;
+  document.getElementById('p-inst').textContent = inst;
+  document.getElementById('p-info').textContent = [city && 'Comuna: ' + city, students && 'Estudiantes: ~' + students, email, phone].filter(Boolean).join(' · ');
+
+  let rows = '';
+  let origTotal = 0, finalTotal = 0, discPct = 0;
+
+  if (mode === 'prog' && selProg) {
+    const p = programs.find(x => x.id === selProg);
+    p.items.forEach(item => {
+      rows += `<tr>
+        <td>${item}</td>
+        <td style="text-align:center;color:var(--gray-text)">—</td>
+        <td style="text-align:right;color:var(--gray-text)">—</td>
+        <td style="text-align:right;color:var(--gray-text)">—</td>
+      </tr>`;
+    });
+    origTotal = p.orig; finalTotal = p.final; discPct = p.disc;
+  } else {
+    for (const [id, qty] of Object.entries(selInd)) {
+      const s = services.find(x => x.id == id);
+      const sub = s.price * qty;
+      origTotal += sub; finalTotal += sub;
+      rows += `<tr>
+        <td>${s.name}</td>
+        <td style="text-align:center">${qty}</td>
+        <td style="text-align:right">${clp(s.price)}</td>
+        <td style="text-align:right">${clp(sub)}</td>
+      </tr>`;
+    }
+  }
+
+  document.getElementById('p-rows').innerHTML = rows;
+
+  let totalHTML = '';
+  if (discPct > 0) {
+    totalHTML = `<span class="total-orig">${clp(origTotal)}</span><span class="total-disc">−${discPct}%</span>`;
+  }
+  totalHTML += `<span class="total-final">Total: ${clp(finalTotal)}</span>`;
+  document.getElementById('p-total-section').innerHTML = totalHTML;
+
+  if (notes) {
+    document.getElementById('p-notes').textContent = notes;
+    document.getElementById('p-notes-wrap').style.display = 'block';
+  } else {
+    document.getElementById('p-notes-wrap').style.display = 'none';
+  }
+}
+
+// ── PDF ───────────────────────────────────────────────────────────────
+function genPDF() {
+  const btn = document.getElementById('btn-pdf');
+  const msg = document.getElementById('pdf-msg');
+  btn.disabled = true;
+  msg.className = 'pdf-msg';
+  msg.textContent = 'Generando PDF...';
+
+  setTimeout(() => {
+    try {
+      const { jsPDF } = window.jspdf;
+      const doc = new jsPDF();
+      const name = document.getElementById('f-name').value.trim();
+      const inst = document.getElementById('f-inst').value.trim();
+      const email = document.getElementById('f-email').value.trim();
+      const phone = document.getElementById('f-phone').value.trim();
+      const city = document.getElementById('f-city').value.trim();
+      const students = document.getElementById('f-students').value.trim();
+      const notes = document.getElementById('f-notes').value.trim();
+      const val = document.getElementById('f-val').value;
+      const now = new Date();
+      const exp = new Date(now.getTime() + val * 86400000);
+      const fd = d => d.toLocaleDateString('es-CL');
+      const cotN = 'COT-' + now.getTime().toString().slice(-6);
+
+      // Header naranja
+      doc.setFillColor(232, 99, 26);
+      doc.rect(0, 0, 210, 36, 'F');
+      doc.setTextColor(255, 255, 255);
+      doc.setFontSize(17); doc.setFont(undefined, 'bold');
+      doc.text('CREO de Creer y Crear SpA', 14, 14);
+      doc.setFontSize(9); doc.setFont(undefined, 'normal');
+      doc.text('Impulsores de la salud mental y emocional', 14, 22);
+      doc.text('contacto@creodecreerycrear.cl  ·  +56 9 4410 6015  ·  +56 9 3232 5296', 14, 29);
+      doc.setFontSize(9);
+      doc.text(cotN, 152, 14);
+      doc.text('Emisión: ' + fd(now), 152, 21);
+      doc.text('Válida hasta: ' + fd(exp), 152, 28);
+
+      // Para
+      doc.setTextColor(30, 30, 30);
+      doc.setFontSize(10); doc.setFont(undefined, 'bold');
+      doc.text('Cotización para:', 14, 48);
+      doc.setFontSize(13); doc.text(name, 14, 56);
+      doc.setFontSize(11); doc.text(inst, 14, 63);
+      let y = 70;
+      doc.setFontSize(9); doc.setTextColor(100, 100, 100); doc.setFont(undefined, 'normal');
+      if (city) { doc.text('Comuna: ' + city, 14, y); y += 6; }
+      doc.text('Email: ' + email, 14, y); y += 6;
+      if (phone) { doc.text('Teléfono: ' + phone, 14, y); y += 6; }
+      if (students) { doc.text('Estudiantes aprox.: ' + students, 14, y); y += 6; }
+
+      // Tabla
+      let bodyRows = [], origT = 0, finalT = 0, discPct = 0;
+      if (mode === 'prog' && selProg) {
+        const p = programs.find(x => x.id === selProg);
+        p.items.forEach(item => bodyRows.push([item, '—', '—', '—']));
+        origT = p.orig; finalT = p.final; discPct = p.disc;
+        bodyRows.push([{ content: `Descuento del ${p.disc}% ya aplicado al total`, colSpan: 4, styles: { fontStyle: 'italic', textColor: [160, 160, 160], fontSize: 8 } }]);
+      } else {
+        for (const [id, qty] of Object.entries(selInd)) {
+          const s = services.find(x => x.id == id);
+          const sub = s.price * qty;
+          origT += sub; finalT += sub;
+          bodyRows.push([s.name, String(qty), '$' + Math.round(s.price).toLocaleString('es-CL'), '$' + Math.round(sub).toLocaleString('es-CL')]);
+        }
+      }
+
+      doc.autoTable({
+        head: [['Descripción', 'Cant.', 'P. Unitario', 'Total']],
+        body: bodyRows,
+        startY: y + 4,
+        headStyles: { fillColor: [232, 99, 26], textColor: 255, fontStyle: 'bold', fontSize: 10 },
+        alternateRowStyles: { fillColor: [253, 240, 232] },
+        columnStyles: { 0: { cellWidth: 'auto' }, 1: { halign: 'center', cellWidth: 18 }, 2: { halign: 'right', cellWidth: 36 }, 3: { halign: 'right', cellWidth: 36 } },
+        styles: { fontSize: 10, cellPadding: 4 },
+        margin: { left: 14, right: 14 }
+      });
+
+      const fy = doc.lastAutoTable.finalY + 10;
+
+      // Total
+      if (discPct > 0) {
+        doc.setFontSize(9); doc.setTextColor(150, 150, 150); doc.setFont(undefined, 'normal');
+        doc.text('Precio original: $' + Math.round(origT).toLocaleString('es-CL') + '   Descuento aplicado: −' + discPct + '%', 14, fy + 5);
+      }
+      const totalY = fy + (discPct > 0 ? 13 : 0);
+      doc.setFillColor(253, 240, 232);
+      doc.roundedRect(122, totalY, 74, 16, 3, 3, 'F');
+      doc.setTextColor(232, 99, 26); doc.setFontSize(12); doc.setFont(undefined, 'bold');
+      doc.text('TOTAL  $' + Math.round(finalT).toLocaleString('es-CL'), 126, totalY + 10.5);
+
+      // Notas
+      if (notes) {
+        let ny = totalY + 26;
+        doc.setTextColor(50, 50, 50); doc.setFontSize(9); doc.setFont(undefined, 'bold');
+        doc.text('Notas:', 14, ny);
+        doc.setFont(undefined, 'normal');
+        const lines = doc.splitTextToSize(notes, 182);
+        doc.text(lines, 14, ny + 6);
+      }
+
+      // Footer
+      doc.setFontSize(7.5); doc.setTextColor(150, 150, 150); doc.setFont(undefined, 'normal');
+      const footer = [
+        'Empresa con giro exento de IVA conforme a normativa tributaria vigente · Registro y Certificación ATE Mineduc · Inscrita en Mercado Público · Certificado de Derechos Intelectuales',
+        'Todos nuestros programas incluyen equipo multidisciplinario, amplificación de sonido profesional y registro audiovisual en alta calidad.',
+        'No se contemplan traslados ni estadía del equipo en el precio. Se requiere estacionamiento y permiso de grabación/difusión audiovisual.',
+        'Esta cotización es válida por ' + val + ' días desde su fecha de emisión · creodecreerycrear.cl · @CREODECREERYCREAR'
+      ];
+      footer.forEach((line, i) => doc.text(line, 14, 275 + i * 5));
+
+      doc.save('cotizacion-creo-' + cotN + '.pdf');
+      msg.className = 'pdf-msg success';
+      msg.textContent = '✓ PDF descargado correctamente (' + cotN + ')';
+    } catch (e) {
+      msg.className = 'pdf-msg error';
+      msg.textContent = 'Error al generar el PDF: ' + e.message;
+    } finally {
+      btn.disabled = false;
+      setTimeout(() => { msg.textContent = ''; msg.className = 'pdf-msg'; }, 5000);
+    }
+  }, 100);
+}
+
+// Keyboard nav on cards
+document.addEventListener('keydown', e => {
+  if (e.key === 'Enter' && (e.target.classList.contains('prog-card') || e.target.classList.contains('svc-card'))) {
+    e.target.click();
+  }
+});
+
+// ── INIT ─────────────────────────────────────────────────────────────
+renderAll();
+</script>
+</body>
+</html>
