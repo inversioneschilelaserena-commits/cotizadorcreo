@@ -4,994 +4,709 @@
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>Cotizador · CREO de Creer y Crear</title>
-<meta name="description" content="Cotiza tu programa integral de salud mental y educación socioemocional con CREO de Creer y Crear."/>
 <link rel="icon" href="https://creodecreerycrear.cl/wp-content/uploads/2024/06/cropped-icono-270x270.png"/>
-<link rel="preconnect" href="https://fonts.googleapis.com"/>
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
-<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.19.0/dist/tabler-icons.min.css"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet"/>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
 <style>
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+*{box-sizing:border-box;margin:0;padding:0}
 :root{
-  --or:#F5C842;--or-light:#FFFBE8;--or-mid:#F9DC7A;--or-dark:#C9A010;
-  --teal:#2BBFAA;--teal-light:#E3F7F4;
-  --navy:#2C3480;--navy-light:#E8EAFF;
-  --bg:#F8F7F4;--white:#FFFFFF;
-  --border:#E8E5DE;--border-focus:#F5C842;
-  --text:#18181B;--text-2:#6B6860;--text-3:#A8A49C;
-  --radius:16px;--radius-sm:10px;--radius-xs:8px;
-  --shadow:0 1px 4px rgba(0,0,0,0.06),0 4px 16px rgba(0,0,0,0.06);
-  --shadow-lg:0 8px 40px rgba(0,0,0,0.1);
-  --font:'Plus Jakarta Sans',sans-serif;
+  --amarillo:#F5C842;--navy:#2C3480;--teal:#2BBFAA;
+  --bg:#F8F7F4;--blanco:#fff;--borde:#E0DDD6;
+  --texto:#18181B;--texto2:#6B6860;--texto3:#A8A49C;
+  --r:14px;--font:'Plus Jakarta Sans',sans-serif;
 }
-html{scroll-behavior:smooth}
-body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:100vh;font-size:15px;line-height:1.5}
+body{font-family:var(--font);background:var(--bg);color:var(--texto);min-height:100vh}
 
 /* TOPBAR */
-.topbar{
-  background:var(--white);border-bottom:1px solid var(--border);
-  padding:0 24px;height:58px;display:flex;align-items:center;
-  justify-content:space-between;position:sticky;top:0;z-index:200;
-}
-.topbar-brand{display:flex;align-items:center;gap:10px;text-decoration:none}
-.topbar-logo{
-  width:40px;height:40px;border-radius:10px;overflow:hidden;
-  display:flex;align-items:center;justify-content:center;
-  flex-shrink:0;background:transparent;
-}
-.topbar-logo img{width:100%;height:100%;object-fit:contain;}
-.topbar-name{font-size:13.5px;font-weight:700;color:var(--text);line-height:1.2}
-.topbar-sub{font-size:11px;color:var(--text-2)}
-.topbar-right{display:flex;align-items:center;gap:12px}
-.topbar-link{
-  font-size:13px;color:var(--navy);text-decoration:none;font-weight:600;
-  display:flex;align-items:center;gap:4px;
-}
-.topbar-link:hover{text-decoration:underline}
+.topbar{background:var(--blanco);border-bottom:1px solid var(--borde);padding:0 24px;height:60px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100}
+.marca{display:flex;align-items:center;gap:10px;text-decoration:none}
+.marca img{width:38px;height:38px;object-fit:contain}
+.marca-nombre{font-size:14px;font-weight:700;color:var(--texto)}
+.marca-sub{font-size:11px;color:var(--texto2)}
+.volver{font-size:13px;font-weight:600;color:var(--navy);text-decoration:none}
 
-/* LAYOUT SPLIT */
-.layout{display:flex;min-height:calc(100vh - 58px)}
-.main-col{flex:1;min-width:0;padding:32px 28px 80px;max-width:680px}
-.side-col{
-  width:320px;flex-shrink:0;
-  border-left:1px solid var(--border);
-  background:var(--white);
-  position:sticky;top:58px;height:calc(100vh - 58px);
-  overflow-y:auto;padding:24px 20px;
-}
+/* LAYOUT */
+.layout{display:flex;min-height:calc(100vh - 60px)}
+.col-main{flex:1;padding:32px 28px 80px;max-width:700px}
+.col-side{width:300px;flex-shrink:0;border-left:1px solid var(--borde);background:var(--blanco);position:sticky;top:60px;height:calc(100vh - 60px);overflow-y:auto;padding:24px 20px}
 
-/* STEPS */
-.steps{display:flex;align-items:center;gap:0;margin-bottom:28px}
-.step-item{display:flex;align-items:center;gap:7px}
-.step-dot{
-  width:28px;height:28px;border-radius:50%;
-  background:var(--border);color:var(--text-2);
-  font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;
-  flex-shrink:0;transition:all .25s;
-}
-.step-dot.active{background:var(--navy);color:#fff;box-shadow:0 0 0 4px rgba(44,52,128,.15)}
-.step-dot.done{background:var(--teal);color:#fff}
-.step-label{font-size:12px;font-weight:600;color:var(--text-2);white-space:nowrap;transition:color .2s}
-.step-label.active{color:var(--navy)}
-.step-label.done{color:var(--teal)}
-.step-connector{flex:1;height:1.5px;background:var(--border);margin:0 8px;transition:background .25s;min-width:20px}
-.step-connector.done{background:var(--teal)}
+/* PASOS */
+.pasos{display:flex;align-items:center;margin-bottom:28px}
+.paso-item{display:flex;align-items:center;gap:6px}
+.paso-dot{width:28px;height:28px;border-radius:50%;background:var(--borde);color:var(--texto2);font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .2s}
+.paso-dot.activo{background:var(--navy);color:#fff}
+.paso-dot.listo{background:var(--teal);color:#fff}
+.paso-label{font-size:12px;font-weight:600;color:var(--texto3)}
+.paso-label.activo{color:var(--navy)}
+.paso-label.listo{color:var(--teal)}
+.paso-linea{flex:1;height:2px;background:var(--borde);margin:0 8px;min-width:20px}
+.paso-linea.listo{background:var(--teal)}
 
-/* SECTION HEADER */
-.step-tag{font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text-3);margin-bottom:4px}
-.step-title{font-size:24px;font-weight:700;color:var(--text);margin-bottom:20px;line-height:1.2;letter-spacing:-.02em}
+/* TITULOS */
+.subtag{font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--texto3);margin-bottom:4px}
+.titulo{font-size:24px;font-weight:700;color:var(--texto);margin-bottom:20px;letter-spacing:-.02em}
 
 /* TABS */
-.tab-wrap{
-  display:flex;gap:6px;background:var(--bg);border:1px solid var(--border);
-  border-radius:var(--radius);padding:5px;margin-bottom:18px;
-}
-.tab-btn{
-  flex:1;padding:9px 14px;border-radius:var(--radius-sm);border:none;
-  background:transparent;color:var(--text-2);font-size:13px;font-weight:600;
-  cursor:pointer;transition:all .15s;display:flex;align-items:center;
-  justify-content:center;gap:6px;font-family:var(--font);
-}
-.tab-btn.active{background:var(--white);color:var(--navy);box-shadow:var(--shadow)}
-.tab-btn i{font-size:15px}
+.tabs{display:flex;gap:6px;background:var(--bg);border:1px solid var(--borde);border-radius:var(--r);padding:5px;margin-bottom:16px}
+.tab{flex:1;padding:9px 12px;border-radius:10px;border:none;background:transparent;color:var(--texto2);font-size:13px;font-weight:600;cursor:pointer;font-family:var(--font);transition:all .15s}
+.tab.activo{background:var(--blanco);color:var(--navy);box-shadow:0 1px 4px rgba(0,0,0,.08)}
 
-/* INFO BOX */
-.info-box{
-  background:var(--or-light);border:1px solid rgba(245,200,66,.3);
-  border-radius:var(--radius-sm);padding:11px 14px;
-  display:flex;align-items:flex-start;gap:9px;margin-bottom:16px;
-  font-size:12.5px;color:var(--navy);line-height:1.5;
-}
-.info-box i{font-size:16px;flex-shrink:0;margin-top:1px}
+/* INFO */
+.info{background:#FFFBE8;border:1px solid rgba(245,200,66,.3);border-radius:10px;padding:10px 14px;font-size:12.5px;color:var(--navy);margin-bottom:14px}
 
-/* PROGRAM CARDS */
-.prog-grid{display:flex;flex-direction:column;gap:10px}
-.prog-card{
-  background:var(--white);border:1.5px solid var(--border);
-  border-radius:var(--radius);padding:16px 18px;cursor:pointer;
-  transition:all .2s;position:relative;overflow:hidden;
-}
-.prog-card:hover{border-color:var(--or-mid);box-shadow:var(--shadow)}
-.prog-card.selected{border-color:var(--navy);background:var(--navy-light);box-shadow:0 0 0 3px rgba(44,52,128,.1)}
-.prog-card-top{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:8px}
-.prog-check{
-  width:20px;height:20px;border-radius:50%;border:1.5px solid var(--border);
-  display:flex;align-items:center;justify-content:center;flex-shrink:0;
-  font-size:10px;color:transparent;transition:all .2s;margin-top:2px;
-}
-.prog-card.selected .prog-check{background:var(--navy);border-color:var(--navy);color:#fff}
-.prog-name{font-size:14px;font-weight:700;color:var(--text);flex:1}
-.prog-disc{
-  background:var(--teal-light);color:var(--teal);
-  font-size:11px;font-weight:700;padding:2px 8px;border-radius:20px;flex-shrink:0;
-}
-.prog-card.selected .prog-disc{background:rgba(26,158,117,.15)}
+/* TARJETAS PROGRAMA */
+.prog-lista{display:flex;flex-direction:column;gap:10px}
+.prog-card{background:var(--blanco);border:2px solid var(--borde);border-radius:var(--r);padding:16px 18px;cursor:pointer;transition:all .2s;position:relative}
+.prog-card:hover{border-color:#aab;box-shadow:0 2px 12px rgba(0,0,0,.06)}
+.prog-card.seleccionado{border-color:var(--navy);background:#EEF0FF}
+.prog-fila-top{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;margin-bottom:8px}
+.prog-nombre{font-size:14px;font-weight:700;color:var(--texto);flex:1}
+.prog-dto{background:#E3F7F4;color:var(--teal);font-size:11px;font-weight:700;padding:2px 8px;border-radius:20px;white-space:nowrap}
+.prog-check{width:20px;height:20px;border-radius:50%;border:2px solid var(--borde);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:10px;color:transparent;transition:all .2s}
+.prog-card.seleccionado .prog-check{background:var(--navy);border-color:var(--navy);color:#fff}
 .prog-tags{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:10px}
-.prog-tag{
-  background:var(--bg);border:1px solid var(--border);
-  border-radius:20px;padding:2px 9px;font-size:11px;color:var(--text-2);
-}
-.prog-card.selected .prog-tag{background:rgba(255,255,255,.6);border-color:rgba(232,99,26,.2)}
-.prog-price-row{display:flex;align-items:center;gap:8px}
-.prog-orig{font-size:12px;color:var(--text-3);text-decoration:line-through}
+.prog-tag{background:var(--bg);border:1px solid var(--borde);border-radius:20px;padding:2px 9px;font-size:11px;color:var(--texto2)}
+.prog-precios{display:flex;align-items:center;gap:8px}
+.prog-orig{font-size:12px;color:var(--texto3);text-decoration:line-through}
 .prog-final{font-size:17px;font-weight:700;color:var(--navy)}
-.prog-save{font-size:11px;color:var(--teal);font-weight:600}
+.prog-ahorro{font-size:11px;color:var(--teal);font-weight:600}
 
-/* SERVICE CARDS */
-.svc-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
-.svc-card{
-  background:var(--white);border:1.5px solid var(--border);
-  border-radius:var(--radius);padding:14px;cursor:pointer;
-  transition:all .2s;position:relative;
-}
-.svc-card:hover{border-color:var(--or-mid);box-shadow:var(--shadow)}
-.svc-card.selected{border-color:var(--navy);background:var(--navy-light)}
-.svc-check{
-  position:absolute;top:12px;right:12px;
-  width:18px;height:18px;border-radius:50%;border:1.5px solid var(--border);
-  display:flex;align-items:center;justify-content:center;
-  font-size:9px;color:transparent;transition:all .2s;
-}
-.svc-card.selected .svc-check{background:var(--navy);border-color:var(--navy);color:#fff}
-.svc-icon{
-  width:38px;height:38px;background:var(--or-light);border-radius:var(--radius-sm);
-  display:flex;align-items:center;justify-content:center;
-  font-size:18px;color:var(--navy);margin-bottom:9px;
-}
-.svc-card.selected .svc-icon{background:rgba(255,255,255,.7)}
-.svc-name{font-size:13px;font-weight:700;color:var(--text);margin-bottom:3px;padding-right:22px}
-.svc-desc{font-size:11.5px;color:var(--text-2);line-height:1.5;margin-bottom:8px}
-.svc-price{font-size:13px;font-weight:700;color:var(--navy)}
-.qty-row{
-  display:flex;align-items:center;gap:6px;margin-top:8px;
-  padding-top:8px;border-top:1px solid rgba(232,99,26,.15);
-}
-.qty-btn{
-  width:26px;height:26px;border-radius:var(--radius-xs);border:1.5px solid var(--border);
-  background:var(--white);cursor:pointer;font-size:15px;color:var(--text);
-  display:flex;align-items:center;justify-content:center;font-family:var(--font);
-  transition:all .15s;
-}
-.qty-btn:hover{border-color:var(--or);color:var(--or)}
-.qty-num{font-size:13px;font-weight:700;min-width:18px;text-align:center}
-.qty-unit{font-size:11px;color:var(--text-2)}
+/* TARJETAS SERVICIO */
+.svc-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.svc-card{background:var(--blanco);border:2px solid var(--borde);border-radius:var(--r);padding:14px;cursor:pointer;transition:all .2s;position:relative}
+.svc-card:hover{border-color:#aab}
+.svc-card.seleccionado{border-color:var(--navy);background:#EEF0FF}
+.svc-icono{font-size:22px;margin-bottom:8px}
+.svc-nombre{font-size:13px;font-weight:700;color:var(--texto);margin-bottom:3px}
+.svc-desc{font-size:11.5px;color:var(--texto2);line-height:1.5;margin-bottom:8px}
+.svc-precio{font-size:13px;font-weight:700;color:var(--navy)}
+.svc-check{position:absolute;top:10px;right:10px;width:18px;height:18px;border-radius:50%;border:2px solid var(--borde);display:flex;align-items:center;justify-content:center;font-size:9px;color:transparent;transition:all .2s}
+.svc-card.seleccionado .svc-check{background:var(--navy);border-color:var(--navy);color:#fff}
+.qty-fila{display:flex;align-items:center;gap:6px;margin-top:8px;padding-top:8px;border-top:1px solid #dde}
+.qty-btn{width:26px;height:26px;border-radius:8px;border:1.5px solid var(--borde);background:var(--blanco);cursor:pointer;font-size:16px;color:var(--texto);display:flex;align-items:center;justify-content:center;line-height:1}
+.qty-num{font-size:13px;font-weight:700;min-width:20px;text-align:center}
+.qty-unidad{font-size:11px;color:var(--texto2)}
 
-/* FORM */
+/* FORMULARIO */
 .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-.form-group{display:flex;flex-direction:column;gap:5px}
-.form-label{font-size:13px;font-weight:600;color:var(--text)}
-.form-label span{color:var(--or)}
-input[type=text],input[type=email],textarea,select{
-  width:100%;padding:10px 14px;
-  border:1.5px solid var(--border);border-radius:var(--radius-sm);
-  font-size:13.5px;font-family:var(--font);color:var(--text);
-  background:var(--white);transition:border-color .15s;outline:none;
-}
-input:focus,textarea:focus,select:focus{border-color:var(--or);box-shadow:0 0 0 3px rgba(232,99,26,.1)}
-textarea{resize:vertical;min-height:80px}
-.form-full{grid-column:1/-1}
+.campo{display:flex;flex-direction:column;gap:5px}
+.campo-label{font-size:13px;font-weight:600;color:var(--texto)}
+.campo-label span{color:var(--navy)}
+.campo input,.campo textarea,.campo select{width:100%;padding:10px 14px;border:2px solid var(--borde);border-radius:10px;font-size:13.5px;font-family:var(--font);color:var(--texto);background:var(--blanco);outline:none;transition:border-color .15s}
+.campo input:focus,.campo textarea:focus,.campo select:focus{border-color:var(--navy)}
+.campo textarea{resize:vertical;min-height:80px}
+.campo-full{grid-column:1/-1}
 
-/* BUTTONS */
-.btn-row{display:flex;gap:10px;margin-top:24px}
-.btn-primary{
-  flex:1;padding:12px 20px;border-radius:var(--radius);border:none;
-  background:var(--or);color:var(--navy);font-size:14.5px;font-weight:700;
-  cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;
-  font-family:var(--font);transition:all .15s;
-  box-shadow:0 4px 14px rgba(245,200,66,.4);
-}
-.btn-primary:hover{background:var(--navy);color:#fff;box-shadow:0 6px 20px rgba(44,52,128,.3)}
-.btn-secondary{
-  padding:12px 20px;border-radius:var(--radius);
-  border:1.5px solid var(--border);background:var(--white);
-  color:var(--text);font-size:14.5px;font-weight:600;
-  cursor:pointer;display:flex;align-items:center;gap:8px;
-  font-family:var(--font);transition:all .15s;
-}
-.btn-secondary:hover{border-color:var(--text-2)}
-.btn-pdf{
-  flex:1;padding:12px 20px;border-radius:var(--radius);border:none;
-  background:var(--teal);color:#fff;font-size:14.5px;font-weight:700;
-  cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;
-  font-family:var(--font);transition:all .15s;
-  box-shadow:0 4px 14px rgba(26,158,117,.3);
-}
-.btn-pdf:hover{background:#0E7A57}
-.btn-pdf:disabled{opacity:.6;cursor:not-allowed}
+/* BOTONES */
+.fila-btns{display:flex;gap:10px;margin-top:24px}
+.btn-pri{flex:1;padding:13px 20px;border-radius:var(--r);border:none;background:var(--amarillo);color:var(--navy);font-size:14px;font-weight:700;cursor:pointer;font-family:var(--font);transition:all .15s;box-shadow:0 4px 12px rgba(245,200,66,.4)}
+.btn-pri:hover{background:var(--navy);color:#fff}
+.btn-sec{padding:13px 20px;border-radius:var(--r);border:2px solid var(--borde);background:var(--blanco);color:var(--texto);font-size:14px;font-weight:600;cursor:pointer;font-family:var(--font);transition:all .15s}
+.btn-sec:hover{border-color:var(--navy);color:var(--navy)}
+.btn-pdf{flex:1;padding:13px 20px;border-radius:var(--r);border:none;background:var(--teal);color:#fff;font-size:14px;font-weight:700;cursor:pointer;font-family:var(--font);transition:all .15s;box-shadow:0 4px 12px rgba(43,191,170,.3)}
+.btn-pdf:hover{background:#1A9E8A}
 
-/* STEP VIEWS */
-.step-view{display:none}
-.step-view.active{display:block}
+/* VISTAS */
+.vista{display:none}
+.vista.activa{display:block}
+
+/* ERROR */
+.msg-error{background:#fee;border:2px solid #f99;border-radius:10px;padding:10px 14px;font-size:13px;color:#c00;font-weight:600;margin-bottom:14px;display:none}
 
 /* PREVIEW */
-.preview-doc{
-  background:var(--white);border:1px solid var(--border);
-  border-radius:var(--radius);overflow:hidden;
-  box-shadow:var(--shadow-lg);margin-bottom:20px;
-}
-.preview-doc-header{
-  background:var(--navy);padding:20px 24px;color:#fff;
-  display:flex;justify-content:space-between;align-items:flex-start;
-}
-.preview-doc-brand{font-size:16px;font-weight:700;line-height:1.3}
-.preview-doc-sub{font-size:10.5px;opacity:.75;margin-top:3px}
-.preview-doc-num{
-  text-align:right;font-size:11px;opacity:.85;
-  background:rgba(255,255,255,.15);border-radius:6px;
-  padding:6px 10px;white-space:nowrap;
-}
-.preview-doc-body{padding:20px 24px}
-.preview-to-label{font-size:10.5px;color:var(--text-3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px}
-.preview-to-name{font-size:17px;font-weight:700;color:var(--text);margin-bottom:2px}
-.preview-to-sub{font-size:12px;color:var(--text-2);line-height:1.6}
-.preview-divider{height:1px;background:var(--border);margin:16px 0}
-.preview-table{width:100%;border-collapse:collapse;font-size:12.5px}
-.preview-table th{
-  text-align:left;font-size:10px;font-weight:700;color:var(--text-3);
-  text-transform:uppercase;letter-spacing:.07em;
-  padding:6px 0;border-bottom:1.5px solid var(--border);
-}
-.preview-table td{
-  padding:9px 0;border-bottom:1px solid var(--border);
-  color:var(--text);vertical-align:top;
-}
-.preview-table tr:last-child td{border-bottom:none}
-.preview-total-row{
-  display:flex;justify-content:flex-end;align-items:center;
-  gap:10px;padding-top:14px;flex-wrap:wrap;
-}
-.ptotal-orig{font-size:13px;color:var(--text-3);text-decoration:line-through}
-.ptotal-disc{
-  background:var(--teal-light);color:var(--teal);
-  font-size:11px;font-weight:700;padding:3px 9px;border-radius:20px;
-}
-.ptotal-final{font-size:22px;font-weight:700;color:var(--navy)}
-.preview-notes{
-  background:var(--bg);border-radius:var(--radius-sm);
-  padding:12px 14px;margin-top:14px;
-}
-.preview-notes-lbl{font-size:10px;font-weight:700;color:var(--text-3);text-transform:uppercase;letter-spacing:.07em;margin-bottom:4px}
-.preview-notes-txt{font-size:12.5px;color:var(--text);line-height:1.6}
-.preview-doc-footer{
-  background:var(--bg);padding:12px 24px;
-  font-size:10.5px;color:var(--text-3);line-height:1.6;
-  border-top:1px solid var(--border);
-}
-.pdf-msg{font-size:12.5px;color:var(--text-2);text-align:center;margin-top:10px;min-height:18px}
-.pdf-msg.success{color:var(--teal);font-weight:700}
-.pdf-msg.error{color:#C0392B}
+.doc{background:var(--blanco);border:1px solid var(--borde);border-radius:var(--r);overflow:hidden;box-shadow:0 4px 24px rgba(0,0,0,.08);margin-bottom:20px}
+.doc-header{background:var(--navy);padding:18px 22px;color:#fff;display:flex;justify-content:space-between;align-items:flex-start;gap:12px}
+.doc-marca{display:flex;align-items:center;gap:12px}
+.doc-logo{width:46px;height:46px;object-fit:contain;border-radius:8px;background:rgba(255,255,255,.15);padding:3px;flex-shrink:0}
+.doc-nombre{font-size:15px;font-weight:700}
+.doc-sub{font-size:9px;opacity:.75;margin-top:2px}
+.doc-num{text-align:right;font-size:10px;opacity:.8;flex-shrink:0}
+.doc-body{padding:18px 22px}
+.doc-para{font-size:10px;color:var(--texto3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:3px}
+.doc-cliente{font-size:17px;font-weight:700;margin-bottom:2px}
+.doc-info{font-size:12px;color:var(--texto2);line-height:1.6}
+.doc-divider{height:1px;background:var(--borde);margin:14px 0}
+.doc-tabla{width:100%;border-collapse:collapse;font-size:12px}
+.doc-tabla th{text-align:left;font-size:10px;font-weight:700;color:var(--texto3);text-transform:uppercase;letter-spacing:.06em;padding:5px 0;border-bottom:2px solid var(--borde)}
+.doc-tabla td{padding:8px 0;border-bottom:1px solid var(--borde);color:var(--texto);vertical-align:top}
+.doc-tabla tr:last-child td{border-bottom:none}
+.doc-total-fila{display:flex;justify-content:flex-end;align-items:center;gap:10px;padding-top:12px;flex-wrap:wrap}
+.doc-orig{font-size:13px;color:var(--texto3);text-decoration:line-through}
+.doc-dto{background:#E3F7F4;color:var(--teal);font-size:11px;font-weight:700;padding:2px 8px;border-radius:20px}
+.doc-total{font-size:22px;font-weight:700;color:var(--navy)}
+.doc-notas{background:var(--bg);border-radius:10px;padding:12px 14px;margin-top:12px}
+.doc-notas-tit{font-size:10px;font-weight:700;color:var(--texto3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:3px}
+.doc-notas-txt{font-size:12.5px;color:var(--texto)}
+.doc-medios{padding:12px 22px;border-top:1px solid var(--borde);background:var(--bg)}
+.doc-medios-tit{font-size:10px;font-weight:700;color:var(--texto3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px}
+.doc-medios-items{display:flex;flex-wrap:wrap;gap:6px}
+.doc-medio{background:var(--blanco);border:1px solid var(--borde);border-radius:8px;padding:5px 11px;font-size:12px;color:var(--texto)}
+.doc-footer{padding:10px 22px;border-top:1px solid var(--borde);font-size:10px;color:var(--texto3);line-height:1.6}
+.pdf-msg{font-size:12.5px;text-align:center;min-height:18px;margin-top:8px}
+.pdf-ok{color:var(--teal);font-weight:700}
+.pdf-err{color:#c00}
 
-/* ── SIDEBAR ── */
-.side-title{
-  font-size:11px;font-weight:700;color:var(--text-3);
-  text-transform:uppercase;letter-spacing:.08em;margin-bottom:14px;
-}
-.side-empty{
-  display:flex;flex-direction:column;align-items:center;justify-content:center;
-  padding:40px 0;text-align:center;gap:10px;
-}
-.side-empty-icon{font-size:2.2rem;color:var(--border)}
-.side-empty-txt{font-size:12.5px;color:var(--text-3);line-height:1.5}
-
-.side-item{
-  display:flex;align-items:flex-start;justify-content:space-between;
-  gap:10px;padding:10px 0;border-bottom:1px solid var(--border);
-}
+/* SIDEBAR */
+.side-tit{font-size:11px;font-weight:700;color:var(--texto3);text-transform:uppercase;letter-spacing:.08em;margin-bottom:14px}
+.side-vacio{text-align:center;padding:40px 0;color:var(--texto3);font-size:13px}
+.side-item{display:flex;justify-content:space-between;align-items:flex-start;gap:8px;padding:9px 0;border-bottom:1px solid var(--borde)}
 .side-item:last-child{border-bottom:none}
-.side-item-name{font-size:13px;font-weight:600;color:var(--text);line-height:1.3}
-.side-item-sub{font-size:11px;color:var(--text-2);margin-top:2px}
-.side-item-price{font-size:13px;font-weight:700;color:var(--or);white-space:nowrap;flex-shrink:0}
-
-.side-total-box{
-  background:var(--navy);border-radius:var(--radius-sm);
-  padding:14px 16px;margin-top:16px;
-}
-.side-total-lbl{font-size:11px;color:rgba(255,255,255,.75);font-weight:600;margin-bottom:4px}
-.side-total-num{font-size:22px;font-weight:700;color:#fff;line-height:1}
-.side-total-save{font-size:11px;color:rgba(255,255,255,.8);margin-top:5px}
-.side-orig{font-size:12px;color:rgba(255,255,255,.5);text-decoration:line-through;margin-bottom:2px}
-
+.side-item-nombre{font-size:13px;font-weight:600}
+.side-item-sub{font-size:11px;color:var(--texto2);margin-top:1px}
+.side-item-precio{font-size:13px;font-weight:700;color:var(--navy);white-space:nowrap}
+.side-caja{background:var(--navy);border-radius:10px;padding:14px 16px;margin-top:14px}
+.side-caja-lbl{font-size:11px;color:rgba(255,255,255,.7);font-weight:600;margin-bottom:3px}
+.side-caja-num{font-size:22px;font-weight:700;color:#fff}
+.side-caja-ahorro{font-size:11px;color:rgba(255,255,255,.75);margin-top:4px}
+.side-caja-orig{font-size:12px;color:rgba(255,255,255,.45);text-decoration:line-through;margin-bottom:2px}
 .side-badges{display:flex;flex-wrap:wrap;gap:5px;margin-top:16px}
-.side-badge{
-  display:flex;align-items:center;gap:4px;
-  background:var(--bg);border:1px solid var(--border);border-radius:20px;
-  padding:4px 9px;font-size:10.5px;color:var(--text-2);
-}
-.side-badge i{font-size:13px;color:var(--teal)}
+.side-badge{background:var(--bg);border:1px solid var(--borde);border-radius:20px;padding:4px 10px;font-size:10.5px;color:var(--texto2)}
+.side-pasos{margin-top:18px}
+.side-paso{display:flex;align-items:center;gap:8px;padding:5px 0;font-size:12px;color:var(--texto3)}
+.side-paso.activo{color:var(--texto);font-weight:600}
+.side-paso.listo{color:var(--teal)}
+.side-paso-num{width:20px;height:20px;border-radius:50%;border:1.5px solid var(--borde);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;flex-shrink:0}
+.side-paso.activo .side-paso-num{background:var(--navy);border-color:var(--navy);color:#fff}
+.side-paso.listo .side-paso-num{background:var(--teal);border-color:var(--teal);color:#fff}
 
-.side-step-prog{margin-top:20px}
-.side-step-item{
-  display:flex;align-items:center;gap:8px;padding:6px 0;
-  font-size:12px;color:var(--text-3);
-}
-.side-step-item.done{color:var(--teal)}
-.side-step-item.active{color:var(--text);font-weight:600}
-.side-step-num{
-  width:20px;height:20px;border-radius:50%;border:1.5px solid var(--border);
-  display:flex;align-items:center;justify-content:center;
-  font-size:10px;font-weight:700;flex-shrink:0;
-}
-.side-step-item.done .side-step-num{background:var(--teal);border-color:var(--teal);color:#fff}
-.side-step-item.active .side-step-num{background:var(--navy);border-color:var(--navy);color:#fff}
-
-/* RESPONSIVE */
-@media(max-width:860px){
-  .side-col{display:none}
-  .layout{display:block}
-  .main-col{max-width:100%;padding:24px 18px 60px}
-}
-@media(max-width:520px){
-  .form-grid{grid-template-columns:1fr}
-  .svc-grid{grid-template-columns:1fr}
-  .step-label{display:none}
-  .topbar-sub{display:none}
-}
+@media(max-width:860px){.col-side{display:none}.layout{display:block}.col-main{max-width:100%;padding:24px 18px 60px}}
+@media(max-width:520px){.form-grid{grid-template-columns:1fr}.svc-grid{grid-template-columns:1fr}.paso-label{display:none}}
 </style>
 </head>
 <body>
 
 <header class="topbar">
-  <a href="https://creodecreerycrear.cl" class="topbar-brand" target="_blank" rel="noopener">
-    <div class="topbar-logo"><img src="https://creodecreerycrear.cl/wp-content/uploads/2024/06/cropped-icono-270x270.png" alt="Logo CREO"/></div>
+  <a href="https://creodecreerycrear.cl" class="marca" target="_blank">
+    <img src="https://creodecreerycrear.cl/wp-content/uploads/2024/06/cropped-icono-270x270.png" alt="Logo CREO"/>
     <div>
-      <div class="topbar-name">CREO de Creer y Crear</div>
-      <div class="topbar-sub">Impulsores de la salud mental y emocional</div>
+      <div class="marca-nombre">CREO de Creer y Crear</div>
+      <div class="marca-sub">Impulsores de la salud mental y emocional</div>
     </div>
   </a>
-  <div class="topbar-right">
-    <a href="https://creodecreerycrear.cl" class="topbar-link" target="_blank" rel="noopener">
-      <i class="ti ti-arrow-left"></i> Volver al sitio
-    </a>
-  </div>
+  <a href="https://creodecreerycrear.cl" class="volver" target="_blank">← Volver al sitio</a>
 </header>
 
 <div class="layout">
-  <!-- COLUMNA PRINCIPAL -->
-  <main class="main-col">
+<main class="col-main">
 
-    <!-- PROGRESS -->
-    <nav class="steps" aria-label="Progreso">
-      <div class="step-item">
-        <div class="step-dot active" id="dot-0"><span>1</span></div>
-        <div class="step-label active" id="lbl-0">Servicios</div>
-      </div>
-      <div class="step-connector" id="con-0"></div>
-      <div class="step-item">
-        <div class="step-dot" id="dot-1"><span>2</span></div>
-        <div class="step-label" id="lbl-1">Datos</div>
-      </div>
-      <div class="step-connector" id="con-1"></div>
-      <div class="step-item">
-        <div class="step-dot" id="dot-2"><span>3</span></div>
-        <div class="step-label" id="lbl-2">Cotización</div>
-      </div>
-    </nav>
+  <nav class="pasos">
+    <div class="paso-item"><div class="paso-dot activo" id="dot0">1</div><div class="paso-label activo" id="lbl0">Servicios</div></div>
+    <div class="paso-linea" id="lin0"></div>
+    <div class="paso-item"><div class="paso-dot" id="dot1">2</div><div class="paso-label" id="lbl1">Datos</div></div>
+    <div class="paso-linea" id="lin1"></div>
+    <div class="paso-item"><div class="paso-dot" id="dot2">3</div><div class="paso-label" id="lbl2">Cotizacion</div></div>
+  </nav>
 
-    <!-- PASO 1 -->
-    <section class="step-view active" id="step-0">
-      <div class="step-tag">Paso 1 de 3</div>
-      <h1 class="step-title">¿Qué necesita tu establecimiento?</h1>
-
-      <div class="tab-wrap" role="tablist">
-        <button class="tab-btn active" id="tab-prog" role="tab" aria-selected="true">
-          <i class="ti ti-package"></i> Programas integrales
-        </button>
-        <button class="tab-btn" id="tab-ind" role="tab" aria-selected="false">
-          <i class="ti ti-list-check"></i> Servicios individuales
-        </button>
-      </div>
-
-      <div id="view-prog">
-        <div class="info-box">
-          <i class="ti ti-discount-2"></i>
-          <span>Los programas incluyen descuentos de hasta 45%. Empresa con giro exento de IVA · Certificación ATE Mineduc · Mercado Público.</span>
-        </div>
-        <div class="prog-grid" id="prog-list"></div>
-      </div>
-
-      <div id="view-ind" style="display:none">
-        <div class="info-box">
-          <i class="ti ti-info-circle"></i>
-          <span>Selecciona uno o más servicios y ajusta la cantidad con los controles. Los precios son referenciales y exentos de IVA.</span>
-        </div>
-        <div class="svc-grid" id="svc-list"></div>
-      </div>
-
-      <div class="btn-row" style="margin-top:24px">
-        <button class="btn-primary" id="btn-continuar">
-          Continuar <i class="ti ti-arrow-right"></i>
-        </button>
-      </div>
-    </section>
-
-    <!-- PASO 2 -->
-    <section class="step-view" id="step-1">
-      <div class="step-tag">Paso 2 de 3</div>
-      <h2 class="step-title">Datos del establecimiento</h2>
-      <div class="form-grid">
-        <div class="form-group">
-          <label class="form-label" for="f-name">Nombre del contacto <span>*</span></label>
-          <input type="text" id="f-name" placeholder="Ej: María González" autocomplete="name"/>
-        </div>
-        <div class="form-group">
-          <label class="form-label" for="f-inst">Establecimiento <span>*</span></label>
-          <input type="text" id="f-inst" placeholder="Ej: Colegio San José"/>
-        </div>
-        <div class="form-group">
-          <label class="form-label" for="f-email">Email <span>*</span></label>
-          <input type="email" id="f-email" placeholder="contacto@colegio.cl" autocomplete="email"/>
-        </div>
-        <div class="form-group">
-          <label class="form-label" for="f-phone">Teléfono</label>
-          <input type="text" id="f-phone" placeholder="+56 9 0000 0000" autocomplete="tel"/>
-        </div>
-        <div class="form-group">
-          <label class="form-label" for="f-city">Comuna</label>
-          <input type="text" id="f-city" placeholder="Ej: Valparaíso"/>
-        </div>
-        <div class="form-group">
-          <label class="form-label" for="f-students">N° de estudiantes aprox.</label>
-          <input type="text" id="f-students" placeholder="Ej: 300"/>
-        </div>
-        <div class="form-group form-full">
-          <label class="form-label" for="f-notes">Notas o requerimientos especiales</label>
-          <textarea id="f-notes" placeholder="Fechas, temáticas específicas, traslados..."></textarea>
-        </div>
-        <div class="form-group">
-          <label class="form-label" for="f-val">Validez de la cotización</label>
-          <select id="f-val">
-            <option value="15">15 días</option>
-            <option value="30" selected>30 días</option>
-            <option value="60">60 días</option>
-          </select>
-        </div>
-      </div>
-      <div class="btn-row">
-        <button class="btn-secondary" id="btn-volver1">
-          <i class="ti ti-arrow-left"></i> Volver
-        </button>
-        <button class="btn-primary" id="btn-paso2">
-          Ver cotización <i class="ti ti-arrow-right"></i>
-        </button>
-      </div>
-    </section>
-
-    <!-- PASO 3 -->
-    <section class="step-view" id="step-2">
-      <div class="step-tag">Paso 3 de 3</div>
-      <h2 class="step-title">Tu cotización</h2>
-
-      <div class="preview-doc">
-        <div class="preview-doc-header">
-          <div style="display:flex;align-items:center;gap:14px">
-            <img src="https://creodecreerycrear.cl/wp-content/uploads/2024/06/cropped-icono-270x270.png" alt="Logo CREO" style="width:52px;height:52px;object-fit:contain;border-radius:10px;background:rgba(255,255,255,0.15);padding:4px;flex-shrink:0"/>
-            <div>
-              <div class="preview-doc-brand">CREO de Creer y Crear SpA</div>
-              <div class="preview-doc-sub">contacto@creodecreerycrear.cl · +56 9 4410 6015 · +56 9 3232 5296</div>
-              <div class="preview-doc-sub" id="p-fecha" style="margin-top:4px"></div>
-            </div>
-          </div>
-          <div class="preview-doc-num">
-            <div id="p-num" style="font-weight:700;font-size:13px">COT-000000</div>
-            <div id="p-valid" style="margin-top:3px;opacity:.75"></div>
-          </div>
-        </div>
-        <div class="preview-doc-body">
-          <div class="preview-to-label">Cotización para</div>
-          <div class="preview-to-name" id="p-name"></div>
-          <div class="preview-to-sub" id="p-inst"></div>
-          <div class="preview-to-sub" id="p-info"></div>
-          <div class="preview-divider"></div>
-          <table class="preview-table">
-            <thead>
-              <tr>
-                <th>Descripción</th>
-                <th style="text-align:center;width:48px">Cant.</th>
-                <th style="text-align:right;width:108px">P. Unitario</th>
-                <th style="text-align:right;width:108px">Total</th>
-              </tr>
-            </thead>
-            <tbody id="p-rows"></tbody>
-          </table>
-          <div class="preview-total-row" id="p-total"></div>
-          <div id="p-notes-wrap" style="display:none">
-            <div class="preview-notes">
-              <div class="preview-notes-lbl">Notas</div>
-              <div class="preview-notes-txt" id="p-notes"></div>
-            </div>
-          </div>
-        </div>
-        <div style="padding:14px 24px;border-top:1px solid var(--border);background:var(--bg)">
-          <div style="font-size:10px;font-weight:700;color:var(--text-3);text-transform:uppercase;letter-spacing:.07em;margin-bottom:10px">Medios de pago aceptados</div>
-          <div style="display:flex;flex-wrap:wrap;gap:8px">
-            <div style="display:flex;align-items:center;gap:6px;background:var(--white);border:1px solid var(--border);border-radius:8px;padding:6px 12px;font-size:12px;color:var(--text)"><i class="ti ti-building-bank" style="color:var(--navy);font-size:15px"></i> Transferencia bancaria</div>
-            <div style="display:flex;align-items:center;gap:6px;background:var(--white);border:1px solid var(--border);border-radius:8px;padding:6px 12px;font-size:12px;color:var(--text)"><i class="ti ti-file-invoice" style="color:var(--navy);font-size:15px"></i> Factura / Orden de compra</div>
-            <div style="display:flex;align-items:center;gap:6px;background:var(--white);border:1px solid var(--border);border-radius:8px;padding:6px 12px;font-size:12px;color:var(--text)"><i class="ti ti-shopping-cart" style="color:var(--navy);font-size:15px"></i> Mercado Público (ChileCompra)</div>
-            <div style="display:flex;align-items:center;gap:6px;background:var(--white);border:1px solid var(--border);border-radius:8px;padding:6px 12px;font-size:12px;color:var(--text)"><i class="ti ti-credit-card" style="color:var(--navy);font-size:15px"></i> Cheque al día</div>
-          </div>
-        </div>
-        <div class="preview-doc-footer">
-          <strong>Empresa con giro exento de IVA</strong> · Certificación ATE Mineduc vigente · Inscrita en Mercado Público · Certificado de Derechos Intelectuales<br>
-          Todos los programas incluyen equipo multidisciplinario, amplificación de sonido profesional y registro audiovisual en alta calidad.
-        </div>
-      </div>
-
-      <div class="btn-row">
-        <button class="btn-secondary" id="btn-volver2">
-          <i class="ti ti-arrow-left"></i> Editar
-        </button>
-        <button class="btn-pdf" id="btn-pdf">
-          <i class="ti ti-file-download"></i> Descargar PDF
-        </button>
-      </div>
-      <p class="pdf-msg" id="pdf-msg" aria-live="polite"></p>
-    </section>
-
-  </main>
-
-  <!-- SIDEBAR STICKY -->
-  <aside class="side-col" aria-label="Resumen de selección">
-    <div class="side-title">Resumen</div>
-    <div id="side-content"></div>
-
-    <div class="side-step-prog" id="side-steps">
-      <div class="side-step-item active" id="sstep-0">
-        <div class="side-step-num">1</div> Seleccionar servicios
-      </div>
-      <div class="side-step-item" id="sstep-1">
-        <div class="side-step-num">2</div> Ingresar datos
-      </div>
-      <div class="side-step-item" id="sstep-2">
-        <div class="side-step-num">3</div> Descargar cotización
-      </div>
+  <!-- PASO 1 -->
+  <div class="vista activa" id="v0">
+    <div class="subtag">Paso 1 de 3</div>
+    <h1 class="titulo">Que necesita tu establecimiento?</h1>
+    <div class="tabs">
+      <button class="tab activo" id="tab-prog">Programas integrales</button>
+      <button class="tab" id="tab-ind">Servicios individuales</button>
     </div>
-
-    <div class="side-badges" style="margin-top:20px">
-      <div class="side-badge"><i class="ti ti-check"></i> Exento IVA</div>
-      <div class="side-badge"><i class="ti ti-check"></i> ATE Mineduc</div>
-      <div class="side-badge"><i class="ti ti-check"></i> Mercado Público</div>
+    <div id="zona-prog">
+      <div class="info">Los programas incluyen descuentos de hasta 45%. Empresa exenta de IVA - ATE Mineduc - Mercado Publico.</div>
+      <div class="prog-lista" id="prog-lista"></div>
     </div>
-  </aside>
+    <div id="zona-ind" style="display:none">
+      <div class="info">Selecciona uno o mas servicios y ajusta la cantidad. Precios referenciales exentos de IVA.</div>
+      <div class="svc-grid" id="svc-grid"></div>
+    </div>
+    <div class="msg-error" id="err0">Por favor selecciona un programa o servicio para continuar.</div>
+    <div class="fila-btns"><button class="btn-pri" id="btn-continuar">Continuar →</button></div>
+  </div>
+
+  <!-- PASO 2 -->
+  <div class="vista" id="v1">
+    <div class="subtag">Paso 2 de 3</div>
+    <h2 class="titulo">Datos del establecimiento</h2>
+    <div class="form-grid">
+      <div class="campo"><label class="campo-label" for="f-nombre">Nombre contacto <span>*</span></label><input type="text" id="f-nombre" placeholder="Ej: Maria Gonzalez"/></div>
+      <div class="campo"><label class="campo-label" for="f-inst">Establecimiento <span>*</span></label><input type="text" id="f-inst" placeholder="Ej: Colegio San Jose"/></div>
+      <div class="campo"><label class="campo-label" for="f-email">Email <span>*</span></label><input type="email" id="f-email" placeholder="contacto@colegio.cl"/></div>
+      <div class="campo"><label class="campo-label" for="f-fono">Telefono</label><input type="text" id="f-fono" placeholder="+56 9 0000 0000"/></div>
+      <div class="campo"><label class="campo-label" for="f-ciudad">Comuna</label><input type="text" id="f-ciudad" placeholder="Ej: La Serena"/></div>
+      <div class="campo"><label class="campo-label" for="f-alumnos">N de estudiantes aprox.</label><input type="text" id="f-alumnos" placeholder="Ej: 300"/></div>
+      <div class="campo campo-full"><label class="campo-label" for="f-notas">Notas o requerimientos</label><textarea id="f-notas" placeholder="Fechas, tematicas, traslados..."></textarea></div>
+      <div class="campo"><label class="campo-label" for="f-val">Validez</label><select id="f-val"><option value="15">15 dias</option><option value="30" selected>30 dias</option><option value="60">60 dias</option></select></div>
+    </div>
+    <div class="msg-error" id="err1"></div>
+    <div class="fila-btns"><button class="btn-sec" id="btn-volver1">← Volver</button><button class="btn-pri" id="btn-paso2">Ver cotizacion →</button></div>
+  </div>
+
+  <!-- PASO 3 -->
+  <div class="vista" id="v2">
+    <div class="subtag">Paso 3 de 3</div>
+    <h2 class="titulo">Tu cotizacion</h2>
+    <div class="doc">
+      <div class="doc-header">
+        <div class="doc-marca">
+          <img class="doc-logo" src="https://creodecreerycrear.cl/wp-content/uploads/2024/06/cropped-icono-270x270.png" alt="Logo"/>
+          <div>
+            <div class="doc-nombre">CREO de Creer y Crear SpA</div>
+            <div class="doc-sub">contacto@creodecreerycrear.cl · +56 9 4410 6015 · +56 9 3232 5296</div>
+            <div class="doc-sub" id="p-fecha"></div>
+          </div>
+        </div>
+        <div class="doc-num"><div id="p-num" style="font-weight:700;font-size:13px"></div><div id="p-valid" style="margin-top:3px"></div></div>
+      </div>
+      <div class="doc-body">
+        <div class="doc-para">Cotizacion para</div>
+        <div class="doc-cliente" id="p-nombre"></div>
+        <div class="doc-info" id="p-info"></div>
+        <div class="doc-divider"></div>
+        <table class="doc-tabla">
+          <thead><tr><th>Descripcion</th><th style="text-align:center;width:44px">Cant.</th><th style="text-align:right;width:100px">P. Unit.</th><th style="text-align:right;width:100px">Total</th></tr></thead>
+          <tbody id="p-filas"></tbody>
+        </table>
+        <div class="doc-total-fila" id="p-total"></div>
+        <div id="p-notas-wrap" style="display:none"><div class="doc-notas"><div class="doc-notas-tit">Notas</div><div class="doc-notas-txt" id="p-notas"></div></div></div>
+      </div>
+      <div class="doc-medios">
+        <div class="doc-medios-tit">Medios de pago aceptados</div>
+        <div class="doc-medios-items">
+          <div class="doc-medio">Transferencia bancaria</div>
+          <div class="doc-medio">Factura / Orden de compra</div>
+          <div class="doc-medio">Mercado Publico (ChileCompra)</div>
+          <div class="doc-medio">Cheque al dia</div>
+        </div>
+      </div>
+      <div class="doc-footer">Empresa con giro exento de IVA · Certificacion ATE Mineduc vigente · Inscrita en Mercado Publico · Certificado de Derechos Intelectuales<br>Todos los programas incluyen equipo multidisciplinario, amplificacion profesional y registro audiovisual en alta calidad.<br>No contemplan traslados ni estadia. Se requiere estacionamiento y permiso de grabacion/difusion audiovisual.</div>
+    </div>
+    <div class="fila-btns"><button class="btn-sec" id="btn-volver2">← Editar</button><button class="btn-pdf" id="btn-pdf">Descargar PDF</button></div>
+    <div class="pdf-msg" id="pdf-msg"></div>
+  </div>
+
+</main>
+<aside class="col-side">
+  <div class="side-tit">Resumen</div>
+  <div id="side-contenido"></div>
+  <div class="side-pasos">
+    <div class="side-paso activo" id="sp0"><div class="side-paso-num">1</div> Seleccionar servicios</div>
+    <div class="side-paso" id="sp1"><div class="side-paso-num">2</div> Ingresar datos</div>
+    <div class="side-paso" id="sp2"><div class="side-paso-num">3</div> Descargar cotizacion</div>
+  </div>
+  <div class="side-badges">
+    <div class="side-badge">Exento IVA</div>
+    <div class="side-badge">ATE Mineduc</div>
+    <div class="side-badge">Mercado Publico</div>
+  </div>
+</aside>
 </div>
 
 <script>
-const programs=[
-  {id:'p1',name:'Programa Intervención Doble',disc:20,orig:1100000,final:880000,items:['2 Conferencias Educartísticas']},
-  {id:'p2',name:'Programa Intervención Avanzada',disc:25,orig:1500000,final:1125000,items:['2 Conferencias Educartísticas','3 Talleres Socioemocionales']},
-  {id:'p3',name:'Programa Integral Avanzado',disc:30,orig:1800000,final:1260000,items:['2 Conferencias Educartísticas','4 Talleres Socioemocionales','10 Pausas Activas'],popular:true},
-  {id:'p4',name:'Programa Integral Full',disc:30,orig:2290000,final:1603000,items:['2 Conferencias Educartísticas','5 Talleres Socioemocionales','10 Pausas Activas','1 Jornada de Autocuidado']},
-  {id:'p5',name:'Programa Integral Premium',disc:35,orig:2920000,final:1898000,items:['2 Conferencias Educartísticas','6 Talleres Socioemocionales','20 Pausas Activas','1 Jornada de Autocuidado','1 Capacitación o Coaching']},
-  {id:'p6',name:'Programa Integral Supremo',disc:35,orig:4060000,final:2639000,items:['3 Conferencias Educartísticas','7 Talleres Socioemocionales','25 Pausas Activas','2 Jornadas de Autocuidado','1 Capacitación o Coaching']},
-  {id:'p7',name:'Programa Integral Elevado',disc:40,orig:6290000,final:3774000,items:['4 Conferencias Educartísticas','8 Talleres Socioemocionales','25 Pausas Activas','2 Jornadas de Autocuidado','2 Capacitaciones','1 Súper Recreo','1 Jingle']},
-  {id:'p8',name:'Programa Integral Máster',disc:40,orig:7790000,final:4674000,items:['4 Conferencias Educartísticas','10 Talleres Socioemocionales','30 Pausas Activas','2 Jornadas de Autocuidado','2 Capacitaciones','2 Súper Recreos','1 Congreso','1 Jingle']},
-  {id:'p9',name:'Programa Integral Magnánimo',disc:45,orig:11250000,final:6187500,items:['5 Conferencias Educartísticas','12 Talleres Socioemocionales','40 Pausas Activas','3 Jornadas de Autocuidado','3 Capacitaciones','3 Súper Recreos','1 Congreso','1 Jingle','1 Festival de Talentos']},
-];
-const services=[
-  {id:1,icon:'ti-microphone',name:'Conferencia Educartística',desc:'Instancia formativa que integra freestyle, beatbox y canciones educativas para potenciar la motivación, la creatividad y las habilidades socioemocionales dentro del entorno escolar.',price:550000,unit:'función'},
-  {id:2,icon:'ti-users',name:'Taller Socioemocional',desc:'Fortalece autoestima, motivación, autorregulación, convivencia y liderazgo. Alineado con los Indicadores de Desarrollo Personal y Social (IDPS) del MINEDUC.',price:80000,unit:'taller'},
-  {id:3,icon:'ti-activity',name:'Pausa Activa',desc:'Intervención breve que combina movimiento, relajación y arte para reducir el estrés, mejorar la concentración y fortalecer la convivencia escolar.',price:25000,unit:'sesión'},
-  {id:4,icon:'ti-heart',name:'Jornada de Autocuidado',desc:'Experiencia para fortalecer el bienestar emocional, físico y relacional de equipos educativos, a través de dinámicas lúdicas, expresivas y reflexivas.',price:350000,unit:'jornada'},
-  {id:5,icon:'ti-school',name:'Capacitación o Coaching',desc:'Proceso formativo que enriquece las habilidades pedagógicas, emocionales y sociales de los docentes, promoviendo la innovación y la mejora continua.',price:250000,unit:'sesión'},
-  {id:6,icon:'ti-run',name:'Súper Recreo Interactivo',desc:'Transforma el recreo en una experiencia educativa y creativa con estaciones temáticas guiadas por artistas educadores, promoviendo inclusión y bienestar.',price:280000,unit:'jornada'},
-  {id:7,icon:'ti-presentation',name:'Congreso o Seminario',desc:'Espacio formativo y vivencial que combina contenidos socioemocionales con arte, charlas de expertos, psicólogos, artistas y coaches educativos.',price:600000,unit:'evento'},
-  {id:8,icon:'ti-music',name:'Jingle o Campaña Promocional',desc:'Canción personalizada con lema y valores del establecimiento. Grabación, mezcla y masterización profesional, con videoclip 100% original.',price:490000,unit:'proyecto'},
-  {id:9,icon:'ti-trophy',name:'Festival de Talentos',desc:'Evento de expresión artística (canto, baile, actuación, magia) organizado por categorías de edad. Todos los participantes reciben reconocimiento y premios.',price:550000,unit:'evento'},
+var programas = [
+  {id:'p1',nombre:'Programa Intervencion Doble',dto:20,orig:1100000,final:880000,items:['2 Conferencias Educartisticas']},
+  {id:'p2',nombre:'Programa Intervencion Avanzada',dto:25,orig:1500000,final:1125000,items:['2 Conferencias Educartisticas','3 Talleres Socioemocionales']},
+  {id:'p3',nombre:'Programa Integral Avanzado',dto:30,orig:1800000,final:1260000,items:['2 Conferencias Educartisticas','4 Talleres Socioemocionales','10 Pausas Activas'],popular:true},
+  {id:'p4',nombre:'Programa Integral Full',dto:30,orig:2290000,final:1603000,items:['2 Conferencias Educartisticas','5 Talleres Socioemocionales','10 Pausas Activas','1 Jornada de Autocuidado']},
+  {id:'p5',nombre:'Programa Integral Premium',dto:35,orig:2920000,final:1898000,items:['2 Conferencias Educartisticas','6 Talleres Socioemocionales','20 Pausas Activas','1 Jornada de Autocuidado','1 Capacitacion']},
+  {id:'p6',nombre:'Programa Integral Supremo',dto:35,orig:4060000,final:2639000,items:['3 Conferencias Educartisticas','7 Talleres Socioemocionales','25 Pausas Activas','2 Jornadas de Autocuidado','1 Capacitacion']},
+  {id:'p7',nombre:'Programa Integral Elevado',dto:40,orig:6290000,final:3774000,items:['4 Conferencias Educartisticas','8 Talleres Socioemocionales','25 Pausas Activas','2 Jornadas de Autocuidado','2 Capacitaciones','1 Super Recreo','1 Jingle']},
+  {id:'p8',nombre:'Programa Integral Master',dto:40,orig:7790000,final:4674000,items:['4 Conferencias Educartisticas','10 Talleres Socioemocionales','30 Pausas Activas','2 Jornadas de Autocuidado','2 Capacitaciones','2 Super Recreos','1 Congreso','1 Jingle']},
+  {id:'p9',nombre:'Programa Integral Magnanimo',dto:45,orig:11250000,final:6187500,items:['5 Conferencias Educartisticas','12 Talleres Socioemocionales','40 Pausas Activas','3 Jornadas de Autocuidado','3 Capacitaciones','3 Super Recreos','1 Congreso','1 Jingle','1 Festival de Talentos']}
 ];
 
-let logoBase64=null;
-function preloadLogo(){
-  const img=new Image();
-  img.crossOrigin='anonymous';
-  img.onload=function(){
-    const canvas=document.createElement('canvas');
-    canvas.width=img.width;canvas.height=img.height;
-    const ctx=canvas.getContext('2d');
-    ctx.drawImage(img,0,0);
-    logoBase64=canvas.toDataURL('image/png');
-  };
-  img.onerror=function(){logoBase64=null;};
-  img.src='https://creodecreerycrear.cl/wp-content/uploads/2024/06/cropped-icono-270x270.png';
-}
-preloadLogo();
-const clp=n=>'$'+Math.round(n).toLocaleString('es-CL');
+var servicios = [
+  {id:1,icono:'🎤',nombre:'Conferencia Educartistica',desc:'Freestyle, beatbox y canciones para potenciar habilidades socioemocionales en el entorno escolar.',precio:550000,unidad:'funcion'},
+  {id:2,icono:'🧠',nombre:'Taller Socioemocional',desc:'Fortalece autoestima, motivacion, convivencia y liderazgo. Alineado con IDPS MINEDUC.',precio:80000,unidad:'taller'},
+  {id:3,icono:'⚡',nombre:'Pausa Activa',desc:'Intervencion breve con movimiento, relajacion y arte para reducir el estres.',precio:25000,unidad:'sesion'},
+  {id:4,icono:'💚',nombre:'Jornada de Autocuidado',desc:'Bienestar emocional y relacional para equipos educativos mediante dinamicas expresivas.',precio:350000,unidad:'jornada'},
+  {id:5,icono:'📚',nombre:'Capacitacion o Coaching',desc:'Formacion docente en habilidades pedagogicas, emocionales y sociales.',precio:250000,unidad:'sesion'},
+  {id:6,icono:'🎮',nombre:'Super Recreo Interactivo',desc:'Estaciones tematicas guiadas por artistas educadores. Promueve inclusion y bienestar.',precio:280000,unidad:'jornada'},
+  {id:7,icono:'🎓',nombre:'Congreso o Seminario',desc:'Jornadas formativas con expertos, psicologos, artistas y coaches educativos.',precio:600000,unidad:'evento'},
+  {id:8,icono:'🎵',nombre:'Jingle o Campana Promocional',desc:'Cancion personalizada con valores del establecimiento. Grabacion y videoclip original.',precio:490000,unidad:'proyecto'},
+  {id:9,icono:'🏆',nombre:'Festival de Talentos',desc:'Evento de expresion artistica por categorias de edad. Todos los participantes son reconocidos.',precio:550000,unidad:'evento'}
+];
 
-function renderPrograms(){
-  document.getElementById('prog-list').innerHTML=programs.map(p=>`
-    <div class="prog-card${selProg===p.id?' selected':''}" data-progid="${p.id}" tabindex="0" role="button" style="cursor:pointer;user-select:none">
-      <div class="prog-card-top">
-        <div style="flex:1">
-          <div class="prog-name">${p.name}${p.popular?' <span style="font-size:11px;color:var(--teal);font-weight:600"> Mas elegido</span>':''}</div>
-        </div>
-        <div style="display:flex;align-items:center;gap:6px;pointer-events:none">
-          <div class="prog-disc">-${p.disc}%</div>
-          <div class="prog-check"><i class="ti ti-check"></i></div>
-        </div>
-      </div>
-      <div class="prog-tags">${p.items.map(i=>`<span class="prog-tag">${i}</span>`).join('')}</div>
-      <div class="prog-price-row">
-        <span class="prog-orig">${clp(p.orig)}</span>
-        <span class="prog-final">${clp(p.final)}</span>
-        <span class="prog-save">ahorras ${clp(p.orig-p.final)}</span>
-      </div>
-    </div>`).join('');
-}
+var modo = 'prog';
+var progSel = null;
+var svcSel = {};
+var pasoActual = 0;
 
-function renderServices(){
-  document.getElementById('svc-list').innerHTML=services.map(s=>`
-    <div class="svc-card${selInd[s.id]?' selected':''}" data-svcid="${s.id}" tabindex="0" role="button" style="cursor:pointer;user-select:none">
-      <div class="svc-check"><i class="ti ti-check"></i></div>
-      <div class="svc-icon"><i class="ti ${s.icon}"></i></div>
-      <div class="svc-name">${s.name}</div>
-      <div class="svc-desc">${s.desc}</div>
-      <div class="svc-price">${clp(s.price)} / ${s.unit}</div>
-      ${selInd[s.id]?`
-        <div class="qty-row" data-qtyrow="1">
-          <button class="qty-btn" data-qtyid="${s.id}" data-qtydelta="-1">-</button>
-          <span class="qty-num">${selInd[s.id]}</span>
-          <button class="qty-btn" data-qtyid="${s.id}" data-qtydelta="1">+</button>
-          <span class="qty-unit">${s.unit}${selInd[s.id]>1?'s':''}</span>
-        </div>`:''}`).join('');
-}
+function clp(n){ return '$' + Math.round(n).toLocaleString('es-CL'); }
 
-function renderSidebar(){
-  const el=document.getElementById('side-content');
-  const hasSelection=(mode==='prog'&&selProg)||(mode==='ind'&&Object.keys(selInd).length>0);
-
-  if(!hasSelection){
-    el.innerHTML=`<div class="side-empty">
-      <i class="ti ti-receipt side-empty-icon"></i>
-      <div class="side-empty-txt">Selecciona un programa o servicio para ver el resumen aquí.</div>
-    </div>`;
-    return;
+function renderProgramas() {
+  var html = '';
+  for(var i=0; i<programas.length; i++) {
+    var p = programas[i];
+    var sel = progSel === p.id;
+    html += '<div class="prog-card' + (sel?' seleccionado':'') + '" data-pid="'+p.id+'">';
+    html += '<div class="prog-fila-top">';
+    html += '<div class="prog-nombre">'+p.nombre+(p.popular?' ⭐':'')+'</div>';
+    html += '<div style="display:flex;align-items:center;gap:6px">';
+    html += '<div class="prog-dto">-'+p.dto+'%</div>';
+    html += '<div class="prog-check">✓</div>';
+    html += '</div></div>';
+    html += '<div class="prog-tags">';
+    for(var j=0; j<p.items.length; j++) html += '<span class="prog-tag">'+p.items[j]+'</span>';
+    html += '</div>';
+    html += '<div class="prog-precios">';
+    html += '<span class="prog-orig">'+clp(p.orig)+'</span>';
+    html += '<span class="prog-final">'+clp(p.final)+'</span>';
+    html += '<span class="prog-ahorro">ahorras '+clp(p.orig-p.final)+'</span>';
+    html += '</div></div>';
   }
+  document.getElementById('prog-lista').innerHTML = html;
+}
 
-  let items='', origT=0, finalT=0, discPct=0;
+function renderServicios() {
+  var html = '';
+  for(var i=0; i<servicios.length; i++) {
+    var s = servicios[i];
+    var sel = !!svcSel[s.id];
+    html += '<div class="svc-card' + (sel?' seleccionado':'') + '" data-sid="'+s.id+'">';
+    html += '<div class="svc-check">✓</div>';
+    html += '<div class="svc-icono">'+s.icono+'</div>';
+    html += '<div class="svc-nombre">'+s.nombre+'</div>';
+    html += '<div class="svc-desc">'+s.desc+'</div>';
+    html += '<div class="svc-precio">'+clp(s.precio)+' / '+s.unidad+'</div>';
+    if(sel) {
+      html += '<div class="qty-fila">';
+      html += '<button class="qty-btn" data-qid="'+s.id+'" data-qd="-1">−</button>';
+      html += '<span class="qty-num">'+svcSel[s.id]+'</span>';
+      html += '<button class="qty-btn" data-qid="'+s.id+'" data-qd="1">+</button>';
+      html += '<span class="qty-unidad">'+s.unidad+(svcSel[s.id]>1?'s':'')+'</span>';
+      html += '</div>';
+    }
+    html += '</div>';
+  }
+  document.getElementById('svc-grid').innerHTML = html;
+}
 
-  if(mode==='prog'&&selProg){
-    const p=programs.find(x=>x.id===selProg);
-    origT=p.orig; finalT=p.final; discPct=p.disc;
-    items=`<div class="side-item">
-      <div>
-        <div class="side-item-name">${p.name}</div>
-        <div class="side-item-sub">${p.items.length} servicios incluidos · −${p.disc}%</div>
-      </div>
-      <div class="side-item-price">${clp(p.final)}</div>
-    </div>`;
+function renderSidebar() {
+  var el = document.getElementById('side-contenido');
+  var tieneSel = (modo==='prog' && progSel) || (modo==='ind' && Object.keys(svcSel).length>0);
+  if(!tieneSel) { el.innerHTML='<div class="side-vacio">Selecciona un programa o servicio para ver el resumen.</div>'; return; }
+  var html = '';
+  var origT=0, finalT=0, dto=0;
+  if(modo==='prog' && progSel) {
+    var p = null;
+    for(var i=0;i<programas.length;i++) if(programas[i].id===progSel) p=programas[i];
+    origT=p.orig; finalT=p.final; dto=p.dto;
+    html += '<div class="side-item"><div><div class="side-item-nombre">'+p.nombre+'</div><div class="side-item-sub">'+p.items.length+' servicios - -'+p.dto+'%</div></div><div class="side-item-precio">'+clp(p.final)+'</div></div>';
   } else {
-    for(const[id,qty]of Object.entries(selInd)){
-      const s=services.find(x=>x.id==id);
-      const sub=s.price*qty;
+    var ids = Object.keys(svcSel);
+    for(var i=0;i<ids.length;i++) {
+      var s=null; for(var j=0;j<servicios.length;j++) if(servicios[j].id==ids[i]) s=servicios[j];
+      var q=svcSel[ids[i]]; var sub=s.precio*q;
       origT+=sub; finalT+=sub;
-      items+=`<div class="side-item">
-        <div>
-          <div class="side-item-name">${s.name}</div>
-          <div class="side-item-sub">${qty} ${s.unit}${qty>1?'s':''}</div>
-        </div>
-        <div class="side-item-price">${clp(sub)}</div>
-      </div>`;
+      html += '<div class="side-item"><div><div class="side-item-nombre">'+s.nombre+'</div><div class="side-item-sub">'+q+' '+s.unidad+(q>1?'s':'')+'</div></div><div class="side-item-precio">'+clp(sub)+'</div></div>';
     }
   }
-
-  el.innerHTML=`${items}
-    <div class="side-total-box">
-      ${discPct>0?`<div class="side-orig">${clp(origT)}</div>`:''}
-      <div class="side-total-lbl">Total estimado</div>
-      <div class="side-total-num">${clp(finalT)}</div>
-      ${discPct>0?`<div class="side-total-save">Ahorras ${clp(origT-finalT)} (−${discPct}%)</div>`:''}
-    </div>`;
+  html += '<div class="side-caja">';
+  if(dto>0) html += '<div class="side-caja-orig">'+clp(origT)+'</div>';
+  html += '<div class="side-caja-lbl">Total estimado</div>';
+  html += '<div class="side-caja-num">'+clp(finalT)+'</div>';
+  if(dto>0) html += '<div class="side-caja-ahorro">Ahorras '+clp(origT-finalT)+' (-'+dto+'%)</div>';
+  html += '</div>';
+  el.innerHTML = html;
 }
 
-function renderSideSteps(n){
-  [0,1,2].forEach(i=>{
-    const el=document.getElementById('sstep-'+i);
-    el.className='side-step-item'+(i<n?' done':i===n?' active':'');
-    el.querySelector('.side-step-num').innerHTML=i<n?'<i class="ti ti-check" style="font-size:10px"></i>':(i+1);
-  });
-}
-
-function renderAll(){renderPrograms();renderServices();renderSidebar()}
-
-function setTab(t){
-  mode=t; selProg=null; selInd={};
-  document.getElementById('tab-prog').className='tab-btn'+(t==='prog'?' active':'');
-  document.getElementById('tab-ind').className='tab-btn'+(t==='ind'?' active':'');
-  document.getElementById('view-prog').style.display=t==='prog'?'block':'none';
-  document.getElementById('view-ind').style.display=t==='ind'?'block':'none';
-  renderAll();
-}
-
-function pickProg(id){
-  selProg=(selProg===id)?null:id;
-  renderPrograms();
-  renderSidebar();
-}
-function toggleSvc(id){selInd[id]?delete selInd[id]:(selInd[id]=1);renderServices();renderSidebar()}
-function chqty(e,id,delta){e.stopPropagation();selInd[id]=Math.max(1,(selInd[id]||1)+delta);renderServices();renderSidebar()}
-
-function showError(msg){
-  let el=document.getElementById('step-error');
-  if(!el){
-    el=document.createElement('div');
-    el.id='step-error';
-    el.style.cssText='background:#fee;border:1.5px solid #f99;border-radius:10px;padding:10px 14px;font-size:13px;color:#c00;font-weight:600;margin-bottom:14px;display:none;';
-    document.getElementById('step-0').insertBefore(el, document.getElementById('step-0').querySelector('.btn-row'));
+function renderSidePasos(n) {
+  for(var i=0;i<3;i++) {
+    var el = document.getElementById('sp'+i);
+    el.className = 'side-paso' + (i<n?' listo':i===n?' activo':'');
+    var num = el.querySelector('.side-paso-num');
+    num.textContent = i<n ? '✓' : (i+1);
   }
-  el.textContent=msg;
-  el.style.display='block';
-  setTimeout(()=>el.style.display='none', 4000);
 }
 
-function goStep(n){
-  if(n===1){
-    if(mode==='prog'&&!selProg){showError('Por favor selecciona un programa para continuar.');return}
-    if(mode==='ind'&&Object.keys(selInd).length===0){showError('Por favor selecciona al menos un servicio.');return}
+function actualizarPasos(n) {
+  for(var i=0;i<3;i++) {
+    var d = document.getElementById('dot'+i);
+    var l = document.getElementById('lbl'+i);
+    d.className = 'paso-dot' + (i<n?' listo':i===n?' activo':'');
+    d.textContent = i<n ? '✓' : (i+1);
+    l.className = 'paso-label' + (i<n?' listo':i===n?' activo':'');
+    if(i<2) document.getElementById('lin'+i).className = 'paso-linea' + (i<n?' listo':'');
   }
-  if(n===2){
-    const name=document.getElementById('f-name').value.trim();
-    const inst=document.getElementById('f-inst').value.trim();
-    const email=document.getElementById('f-email').value.trim();
-    if(!name){showError('El nombre del contacto es obligatorio.');return}
-    if(!inst){showError('El nombre del establecimiento es obligatorio.');return}
-    if(!email||!email.includes('@')){showError('Ingresa un email valido.');return}
-    buildPreview();
-  }
-  [0,1,2].forEach(i=>{
-    const d=document.getElementById('dot-'+i);
-    const l=document.getElementById('lbl-'+i);
-    d.className='step-dot'+(i<n?' done':i===n?' active':'');
-    l.className='step-label'+(i<n?' done':i===n?' active':'');
-    d.innerHTML=i<n?'<i class="ti ti-check" style="font-size:12px"></i>':'<span>'+(i+1)+'</span>';
-    if(i<2)document.getElementById('con-'+i).className='step-connector'+(i<n?' done':'');
-  });
-  document.getElementById('step-'+currentStep).classList.remove('active');
-  currentStep=n;
-  document.getElementById('step-'+currentStep).classList.add('active');
-  renderSideSteps(n);
-  window.scrollTo({top:0,behavior:'smooth'});
 }
 
-function buildPreview(){
-  const name=document.getElementById('f-name').value.trim();
-  const inst=document.getElementById('f-inst').value.trim();
-  const email=document.getElementById('f-email').value.trim();
-  const phone=document.getElementById('f-phone').value.trim();
-  const city=document.getElementById('f-city').value.trim();
-  const students=document.getElementById('f-students').value.trim();
-  const notes=document.getElementById('f-notes').value.trim();
-  const val=document.getElementById('f-val').value;
-  const now=new Date();
-  const exp=new Date(now.getTime()+val*86400000);
-  const fd=d=>d.toLocaleDateString('es-CL',{day:'2-digit',month:'2-digit',year:'numeric'});
-  const cotN='COT-'+now.getTime().toString().slice(-6);
+function irA(n) {
+  document.getElementById('v'+pasoActual).className = 'vista';
+  pasoActual = n;
+  document.getElementById('v'+pasoActual).className = 'vista activa';
+  actualizarPasos(n);
+  renderSidePasos(n);
+  window.scrollTo(0,0);
+}
 
-  document.getElementById('p-num').textContent=cotN;
-  document.getElementById('p-fecha').textContent='Fecha de emisión: '+fd(now);
-  document.getElementById('p-valid').textContent='Válida hasta: '+fd(exp);
-  document.getElementById('p-name').textContent=name;
-  document.getElementById('p-inst').textContent=inst;
-  document.getElementById('p-info').textContent=[city&&'📍 '+city,students&&'👥 ~'+students+' estudiantes',email,phone].filter(Boolean).join(' · ');
+function construirPreview() {
+  var nombre = document.getElementById('f-nombre').value.trim();
+  var inst = document.getElementById('f-inst').value.trim();
+  var email = document.getElementById('f-email').value.trim();
+  var fono = document.getElementById('f-fono').value.trim();
+  var ciudad = document.getElementById('f-ciudad').value.trim();
+  var alumnos = document.getElementById('f-alumnos').value.trim();
+  var notas = document.getElementById('f-notas').value.trim();
+  var val = document.getElementById('f-val').value;
+  var ahora = new Date();
+  var exp = new Date(ahora.getTime()+val*86400000);
+  var fd = function(d){ return d.toLocaleDateString('es-CL'); };
+  var cotN = 'COT-'+ahora.getTime().toString().slice(-6);
 
-  let rows='', origT=0, finalT=0, discPct=0;
-  if(mode==='prog'&&selProg){
-    const p=programs.find(x=>x.id===selProg);
-    p.items.forEach(item=>{rows+=`<tr><td>${item}</td><td style="text-align:center;color:var(--text-3)">—</td><td style="text-align:right;color:var(--text-3)">—</td><td style="text-align:right;color:var(--text-3)">—</td></tr>`});
-    origT=p.orig; finalT=p.final; discPct=p.disc;
-    rows+=`<tr><td colspan="4" style="font-size:11px;color:var(--text-3);font-style:italic;padding-top:6px">Descuento del ${p.disc}% ya aplicado al total del programa</td></tr>`;
+  document.getElementById('p-num').textContent = cotN;
+  document.getElementById('p-fecha').textContent = 'Emision: '+fd(ahora);
+  document.getElementById('p-valid').textContent = 'Valida hasta: '+fd(exp);
+  document.getElementById('p-nombre').textContent = nombre;
+  var info = inst;
+  if(ciudad) info += ' - ' + ciudad;
+  if(alumnos) info += ' - ' + alumnos + ' estudiantes aprox.';
+  info += '\n' + email;
+  if(fono) info += ' · ' + fono;
+  document.getElementById('p-info').textContent = info;
+
+  var filas = '';
+  var origT=0, finalT=0, dto=0;
+  if(modo==='prog' && progSel) {
+    var p=null; for(var i=0;i<programas.length;i++) if(programas[i].id===progSel) p=programas[i];
+    origT=p.orig; finalT=p.final; dto=p.dto;
+    filas += '<tr><td colspan="4" style="font-weight:700;padding-bottom:4px">'+p.nombre+'</td></tr>';
+    for(var i=0;i<p.items.length;i++) filas += '<tr><td colspan="4" style="font-size:11px;color:#888;padding-left:8px">• '+p.items[i]+'</td></tr>';
+    filas += '<tr><td colspan="4" style="font-size:11px;color:#aaa;font-style:italic">Descuento del '+p.dto+'% incluido en el total.</td></tr>';
   } else {
-    for(const[id,qty]of Object.entries(selInd)){
-      const s=services.find(x=>x.id==id);
-      const sub=s.price*qty;
+    var ids = Object.keys(svcSel);
+    for(var i=0;i<ids.length;i++) {
+      var s=null; for(var j=0;j<servicios.length;j++) if(servicios[j].id==ids[i]) s=servicios[j];
+      var q=svcSel[ids[i]]; var sub=s.precio*q;
       origT+=sub; finalT+=sub;
-      rows+=`<tr><td><div style="font-weight:600">${s.name}</div><div style="font-size:11px;color:var(--text-3);margin-top:2px;line-height:1.4">${s.desc}</div></td><td style="text-align:center;vertical-align:top;padding-top:6px">${qty}</td><td style="text-align:right;vertical-align:top;padding-top:6px">${clp(s.price)}</td><td style="text-align:right;vertical-align:top;padding-top:6px">${clp(sub)}</td></tr>`;
+      filas += '<tr><td><div style="font-weight:600">'+s.nombre+'</div><div style="font-size:11px;color:#888;margin-top:2px">'+s.desc+'</div></td>';
+      filas += '<td style="text-align:center">'+q+'</td>';
+      filas += '<td style="text-align:right">'+clp(s.precio)+'</td>';
+      filas += '<td style="text-align:right;font-weight:700">'+clp(sub)+'</td></tr>';
     }
   }
-  document.getElementById('p-rows').innerHTML=rows;
+  document.getElementById('p-filas').innerHTML = filas;
 
-  let totalHTML='';
-  if(discPct>0) totalHTML+=`<span class="ptotal-orig">${clp(origT)}</span><span class="ptotal-disc">−${discPct}%</span>`;
-  totalHTML+=`<span class="ptotal-final">Total: ${clp(finalT)}</span>`;
-  document.getElementById('p-total').innerHTML=totalHTML;
+  var totalHTML = '';
+  if(dto>0) totalHTML += '<span class="doc-orig">'+clp(origT)+'</span><span class="doc-dto">-'+dto+'%</span>';
+  totalHTML += '<span class="doc-total">Total: '+clp(finalT)+'</span>';
+  document.getElementById('p-total').innerHTML = totalHTML;
 
-  if(notes){document.getElementById('p-notes').textContent=notes;document.getElementById('p-notes-wrap').style.display='block'}
-  else{document.getElementById('p-notes-wrap').style.display='none'}
+  if(notas) {
+    document.getElementById('p-notas').textContent = notas;
+    document.getElementById('p-notas-wrap').style.display = 'block';
+  } else {
+    document.getElementById('p-notas-wrap').style.display = 'none';
+  }
 }
 
-function genPDF(){
-  const btn=document.getElementById('btn-pdf');
-  const msg=document.getElementById('pdf-msg');
-  btn.disabled=true; msg.className='pdf-msg'; msg.textContent='Generando PDF...';
-  setTimeout(()=>{
-    try{
-      const{jsPDF}=window.jspdf;
-      const doc=new jsPDF();
-      const name=document.getElementById('f-name').value.trim();
-      const inst=document.getElementById('f-inst').value.trim();
-      const email=document.getElementById('f-email').value.trim();
-      const phone=document.getElementById('f-phone').value.trim();
-      const city=document.getElementById('f-city').value.trim();
-      const students=document.getElementById('f-students').value.trim();
-      const notes=document.getElementById('f-notes').value.trim();
-      const val=document.getElementById('f-val').value;
-      const now=new Date();
-      const exp=new Date(now.getTime()+val*86400000);
-      const fd=d=>d.toLocaleDateString('es-CL');
-      const cotN='COT-'+now.getTime().toString().slice(-6);
+function generarPDF() {
+  var btn = document.getElementById('btn-pdf');
+  var msg = document.getElementById('pdf-msg');
+  btn.disabled = true;
+  msg.className = 'pdf-msg';
+  msg.textContent = 'Generando PDF...';
 
-      doc.setFillColor(44,52,128);doc.rect(0,0,210,38,'F');
-      if(logoBase64){
-        try{doc.addImage(logoBase64,'PNG',14,5,26,26);}catch(e){}
-      }
-      doc.setTextColor(255,255,255);doc.setFontSize(17);doc.setFont(undefined,'bold');
-      doc.text('CREO de Creer y Crear SpA',logoBase64?44:14,14);
-      doc.setFontSize(9);doc.setFont(undefined,'normal');
-      const hx=logoBase64?44:14;
-      doc.text('Impulsores de la salud mental y emocional',hx,22);
-      doc.text('contacto@creodecreerycrear.cl  ·  +56 9 4410 6015  ·  +56 9 3232 5296',hx,30);
-      doc.setFontSize(10);doc.setFont(undefined,'bold');doc.text(cotN,152,14);
-      doc.setFontSize(8.5);doc.setFont(undefined,'normal');
-      doc.text('Emisión: '+fd(now),152,22);doc.text('Válida hasta: '+fd(exp),152,30);
+  setTimeout(function(){
+    try {
+      var jsPDF = window.jspdf.jsPDF;
+      var doc = new jsPDF();
 
-      doc.setTextColor(30,30,30);doc.setFontSize(10);doc.setFont(undefined,'bold');
-      doc.text('Cotización para:',14,50);
-      doc.setFontSize(14);doc.text(name,14,59);
-      doc.setFontSize(11);doc.text(inst,14,67);
-      let y=75;doc.setFontSize(9);doc.setTextColor(110,110,110);doc.setFont(undefined,'normal');
-      if(city){doc.text('Comuna: '+city,14,y);y+=6}
-      doc.text('Email: '+email,14,y);y+=6;
-      if(phone){doc.text('Teléfono: '+phone,14,y);y+=6}
-      if(students){doc.text('Estudiantes aprox.: '+students,14,y);y+=6}
+      var nombre = document.getElementById('f-nombre').value.trim();
+      var inst = document.getElementById('f-inst').value.trim();
+      var email = document.getElementById('f-email').value.trim();
+      var fono = document.getElementById('f-fono').value.trim();
+      var ciudad = document.getElementById('f-ciudad').value.trim();
+      var alumnos = document.getElementById('f-alumnos').value.trim();
+      var notas = document.getElementById('f-notas').value.trim();
+      var val = document.getElementById('f-val').value;
+      var ahora = new Date();
+      var exp = new Date(ahora.getTime()+val*86400000);
+      var fd = function(d){ return d.toLocaleDateString('es-CL'); };
+      var cotN = 'COT-'+ahora.getTime().toString().slice(-6);
 
-      let bodyRows=[],origT=0,finalT=0,discPct=0;
-      if(mode==='prog'&&selProg){
-        const p=programs.find(x=>x.id===selProg);
-        bodyRows.push([{content:p.name,colSpan:4,styles:{fontStyle:'bold',fontSize:11,textColor:[30,30,30],fillColor:[255,243,236]}}]);
-        p.items.forEach(item=>bodyRows.push([{content:'  • '+item,colSpan:4,styles:{fontSize:9,textColor:[80,80,80]}}]));
-        origT=p.orig;finalT=p.final;discPct=p.disc;
-        bodyRows.push([{content:'Descuento del '+p.disc+'% ya incluido en el total del programa',colSpan:4,styles:{fontStyle:'italic',textColor:[160,160,160],fontSize:8}}]);
+      // HEADER
+      doc.setFillColor(44,52,128);
+      doc.rect(0,0,210,38,'F');
+      doc.setTextColor(255,255,255);
+      doc.setFontSize(16);
+      doc.setFont(undefined,'bold');
+      doc.text('CREO de Creer y Crear SpA',14,14);
+      doc.setFontSize(8);
+      doc.setFont(undefined,'normal');
+      doc.text('contacto@creodecreerycrear.cl · +56 9 4410 6015 · +56 9 3232 5296',14,22);
+      doc.text('Emision: '+fd(ahora),14,30);
+      doc.setFontSize(11);
+      doc.setFont(undefined,'bold');
+      doc.text(cotN,160,14);
+      doc.setFontSize(8);
+      doc.setFont(undefined,'normal');
+      doc.text('Valida hasta: '+fd(exp),152,22);
+
+      // CLIENTE
+      doc.setTextColor(30,30,30);
+      doc.setFontSize(9);
+      doc.setFont(undefined,'bold');
+      doc.text('Cotizacion para:',14,50);
+      doc.setFontSize(13);
+      doc.text(nombre,14,59);
+      doc.setFontSize(10);
+      doc.text(inst,14,67);
+      var y=75;
+      doc.setFontSize(8.5);
+      doc.setFont(undefined,'normal');
+      doc.setTextColor(100,100,100);
+      if(ciudad){ doc.text('Comuna: '+ciudad,14,y); y+=6; }
+      doc.text('Email: '+email,14,y); y+=6;
+      if(fono){ doc.text('Telefono: '+fono,14,y); y+=6; }
+      if(alumnos){ doc.text('Estudiantes aprox.: '+alumnos,14,y); y+=6; }
+
+      // TABLA
+      var filas=[], origT=0, finalT=0, dto=0;
+      if(modo==='prog' && progSel) {
+        var p=null; for(var i=0;i<programas.length;i++) if(programas[i].id===progSel) p=programas[i];
+        origT=p.orig; finalT=p.final; dto=p.dto;
+        filas.push([{content:p.nombre,colSpan:4,styles:{fontStyle:'bold',fontSize:11,fillColor:[238,240,255]}}]);
+        for(var i=0;i<p.items.length;i++) filas.push([{content:'  • '+p.items[i],colSpan:4,styles:{fontSize:9,textColor:[120,120,120]}}]);
+        filas.push([{content:'Descuento del '+p.dto+'% ya incluido en el total del programa.',colSpan:4,styles:{fontStyle:'italic',textColor:[170,170,170],fontSize:8}}]);
       } else {
-        for(const[id,qty]of Object.entries(selInd)){
-          const s=services.find(x=>x.id==id);const sub=s.price*qty;
-          origT+=sub;finalT+=sub;
-          bodyRows.push([
-            {content:s.name+'\n'+s.desc,styles:{fontSize:10,fontStyle:'bold'}},
-            {content:String(qty),styles:{halign:'center',fontSize:10}},
-            {content:'$'+Math.round(s.price).toLocaleString('es-CL'),styles:{halign:'right',fontSize:10}},
-            {content:'$'+Math.round(sub).toLocaleString('es-CL'),styles:{halign:'right',fontSize:10,fontStyle:'bold'}}
-          ]);
+        var ids=Object.keys(svcSel);
+        for(var i=0;i<ids.length;i++) {
+          var s=null; for(var j=0;j<servicios.length;j++) if(servicios[j].id==ids[i]) s=servicios[j];
+          var q=svcSel[ids[i]]; var sub=s.precio*q;
+          origT+=sub; finalT+=sub;
+          filas.push([s.nombre+'\n'+s.desc, String(q), '$'+Math.round(s.precio).toLocaleString('es-CL'), '$'+Math.round(sub).toLocaleString('es-CL')]);
         }
       }
+
       doc.autoTable({
-        head:[['Descripción','Cant.','P. Unitario','Total']],
-        body:bodyRows,startY:y+4,
-        headStyles:{fillColor:[44,52,128],textColor:255,fontStyle:'bold',fontSize:10},
-        alternateRowStyles:{fillColor:[255,251,232]},
-        columnStyles:{0:{cellWidth:'auto'},1:{halign:'center',cellWidth:18},2:{halign:'right',cellWidth:36},3:{halign:'right',cellWidth:36}},
-        styles:{fontSize:10,cellPadding:5,valign:'top',overflow:'linebreak'},
-        didParseCell:function(data){
-          if(data.column.index===0&&data.cell.raw&&typeof data.cell.raw==='object'&&data.cell.raw.content&&data.cell.raw.content.includes('\n')){
-            const parts=data.cell.raw.content.split('\n');
-            data.cell.text=parts;
-          }
-        },
+        head:[['Descripcion','Cant.','P. Unit.','Total']],
+        body: filas,
+        startY: y+4,
+        headStyles:{fillColor:[44,52,128],textColor:255,fontStyle:'bold',fontSize:9},
+        alternateRowStyles:{fillColor:[255,251,230]},
+        columnStyles:{0:{cellWidth:'auto'},1:{halign:'center',cellWidth:16},2:{halign:'right',cellWidth:34},3:{halign:'right',cellWidth:34}},
+        styles:{fontSize:9,cellPadding:4,overflow:'linebreak'},
         margin:{left:14,right:14}
       });
 
-      const fy=doc.lastAutoTable.finalY+10;
-      if(discPct>0){
-        doc.setFontSize(9);doc.setTextColor(150,150,150);doc.setFont(undefined,'normal');
-        doc.text('Precio sin descuento: $'+Math.round(origT).toLocaleString('es-CL')+'   Descuento aplicado: −'+discPct+'%',14,fy+5);
+      var fy = doc.lastAutoTable.finalY+10;
+      if(dto>0) {
+        doc.setFontSize(8.5); doc.setTextColor(150,150,150); doc.setFont(undefined,'normal');
+        doc.text('Sin descuento: $'+Math.round(origT).toLocaleString('es-CL')+'   Descuento: -'+dto+'%',14,fy+4);
+        fy+=10;
       }
-      const ty=fy+(discPct>0?13:0);
-      doc.setFillColor(245,200,66);doc.roundedRect(120,ty,76,18,3,3,'F');
-      doc.setFillColor(44,52,128);doc.roundedRect(120,ty,76,18,3,3,'S');
-      doc.setTextColor(44,52,128);doc.setFontSize(12);doc.setFont(undefined,'bold');
-      doc.text('TOTAL  $'+Math.round(finalT).toLocaleString('es-CL'),124,ty+11.5);
+      doc.setFillColor(245,200,66);
+      doc.roundedRect(118,fy,78,16,3,3,'F');
+      doc.setTextColor(44,52,128);
+      doc.setFontSize(11);
+      doc.setFont(undefined,'bold');
+      doc.text('TOTAL  $'+Math.round(finalT).toLocaleString('es-CL'),122,fy+10.5);
 
-      if(notes){
-        let ny=ty+28;
-        doc.setTextColor(50,50,50);doc.setFontSize(9);doc.setFont(undefined,'bold');doc.text('Notas:',14,ny);
-        doc.setFont(undefined,'normal');doc.text(doc.splitTextToSize(notes,182),14,ny+6);
+      var ny = fy+24;
+      if(notas) {
+        doc.setTextColor(50,50,50); doc.setFontSize(8.5); doc.setFont(undefined,'bold');
+        doc.text('Notas:',14,ny); doc.setFont(undefined,'normal');
+        doc.text(doc.splitTextToSize(notas,182),14,ny+6);
+        ny+=18;
       }
 
       // MEDIOS DE PAGO
-      const my=ty+(notes?44:26);
-      doc.setFillColor(248,247,244);doc.roundedRect(14,my,182,22,3,3,'F');
-      doc.setFontSize(8);doc.setFont(undefined,'bold');doc.setTextColor(44,52,128);
-      doc.text('MEDIOS DE PAGO ACEPTADOS',17,my+7);
-      doc.setFont(undefined,'normal');doc.setTextColor(80,80,80);doc.setFontSize(8.5);
-      doc.text('* Transferencia bancaria   * Factura / Orden de compra   * Mercado Publico (ChileCompra)   * Cheque al dia',17,my+15);
+      doc.setFillColor(248,247,244);
+      doc.roundedRect(14,ny,182,18,3,3,'F');
+      doc.setFontSize(7.5); doc.setFont(undefined,'bold'); doc.setTextColor(44,52,128);
+      doc.text('MEDIOS DE PAGO:',17,ny+6);
+      doc.setFont(undefined,'normal'); doc.setTextColor(80,80,80); doc.setFontSize(8);
+      doc.text('Transferencia bancaria  |  Factura / Orden de compra  |  Mercado Publico  |  Cheque al dia',17,ny+13);
 
-      const footer=[
-        'Empresa con giro exento de IVA - Registro y Certificacion ATE Mineduc vigente - Inscrita en Mercado Publico - Certificado de Derechos Intelectuales',
-        'Mas de 11 anos transformando vidas: 500+ colegios - 100.000+ estudiantes beneficiados - 5.000+ docentes capacitados - 50+ municipalidades.',
-        'Todos los programas incluyen equipo multidisciplinario, amplificacion profesional y registro audiovisual en alta calidad.',
-        'No contemplan traslados ni estadia. Se requiere estacionamiento y permiso de grabacion/difusion - Valida por '+val+' dias - creodecreerycrear.cl'
-      ];
-      doc.setFontSize(7.5);doc.setTextColor(160,160,160);doc.setFont(undefined,'normal');
-      footer.forEach((line,i)=>doc.text(line,14,275+i*5));
+      // PIE
+      doc.setFontSize(7); doc.setTextColor(160,160,160); doc.setFont(undefined,'normal');
+      doc.text('Empresa con giro exento de IVA · Certificacion ATE Mineduc · Mercado Publico · Certificado de Derechos Intelectuales',14,274);
+      doc.text('Todos los programas incluyen equipo multidisciplinario, amplificacion profesional y registro audiovisual en alta calidad.',14,279);
+      doc.text('No contemplan traslados ni estadia. Se requiere estacionamiento y permiso de grabacion/difusion · creodecreerycrear.cl',14,284);
 
       doc.save('cotizacion-creo-'+cotN+'.pdf');
-      msg.className='pdf-msg success';msg.textContent='✓ PDF descargado correctamente ('+cotN+')';
-    } catch(e){
-      console.error('PDF error:', e);
-      msg.className='pdf-msg error';msg.textContent='Error: '+e.message+' — Revisa la consola del navegador (F12)';
-    } finally{
-      btn.disabled=false;
-      setTimeout(()=>{msg.textContent='';msg.className='pdf-msg'},5000);
+      msg.className='pdf-msg pdf-ok';
+      msg.textContent='PDF descargado: '+cotN;
+    } catch(err) {
+      msg.className='pdf-msg pdf-err';
+      msg.textContent='Error: '+err.message;
     }
-  },100);
+    btn.disabled=false;
+    setTimeout(function(){ msg.textContent=''; },5000);
+  },150);
 }
 
-document.addEventListener('DOMContentLoaded', function(){
+// INICIAR
+renderProgramas();
+renderServicios();
+renderSidebar();
 
-  renderAll();
-
-  // TABS
-  document.getElementById('tab-prog').addEventListener('click', function(){ setTab('prog'); });
-  document.getElementById('tab-ind').addEventListener('click', function(){ setTab('ind'); });
-
-  // NAVEGACION
-  document.getElementById('btn-continuar').addEventListener('click', function(){ goStep(1); });
-  document.getElementById('btn-volver1').addEventListener('click', function(){ goStep(0); });
-  document.getElementById('btn-paso2').addEventListener('click', function(){ goStep(2); });
-  document.getElementById('btn-volver2').addEventListener('click', function(){ goStep(1); });
-  document.getElementById('btn-pdf').addEventListener('click', function(){ genPDF(); });
-
-  // PROGRAMAS - delegacion desde el contenedor padre estático
-  document.getElementById('view-prog').addEventListener('click', function(e){
-    var card = e.target.closest('[data-progid]');
-    if(card){
-      var id = card.getAttribute('data-progid');
-      selProg = (selProg === id) ? null : id;
-      renderPrograms();
-      renderSidebar();
-    }
-  });
-
-  // SERVICIOS - delegacion desde el contenedor padre estático
-  document.getElementById('view-ind').addEventListener('click', function(e){
-    var qbtn = e.target.closest('[data-qtyid]');
-    if(qbtn){
-      e.stopPropagation();
-      var id = parseInt(qbtn.getAttribute('data-qtyid'));
-      var delta = parseInt(qbtn.getAttribute('data-qtydelta'));
-      selInd[id] = Math.max(1, (selInd[id]||1) + delta);
-      renderServices();
-      renderSidebar();
-      return;
-    }
-    var card = e.target.closest('[data-svcid]');
-    if(card){
-      var id2 = parseInt(card.getAttribute('data-svcid'));
-      if(selInd[id2]) delete selInd[id2]; else selInd[id2] = 1;
-      renderServices();
-      renderSidebar();
-    }
-  });
-
+// CLICKS EN PROGRAMAS
+document.getElementById('zona-prog').addEventListener('click', function(e) {
+  var card = e.target;
+  while(card && !card.getAttribute('data-pid')) card = card.parentElement;
+  if(card && card.getAttribute('data-pid')) {
+    var id = card.getAttribute('data-pid');
+    progSel = (progSel===id) ? null : id;
+    renderProgramas();
+    renderSidebar();
+  }
 });
+
+// CLICKS EN SERVICIOS
+document.getElementById('zona-ind').addEventListener('click', function(e) {
+  var qbtn = e.target;
+  if(qbtn.getAttribute('data-qid')) {
+    var id = parseInt(qbtn.getAttribute('data-qid'));
+    var d = parseInt(qbtn.getAttribute('data-qd'));
+    svcSel[id] = Math.max(1,(svcSel[id]||1)+d);
+    renderServicios(); renderSidebar(); return;
+  }
+  var card = e.target;
+  while(card && !card.getAttribute('data-sid')) card = card.parentElement;
+  if(card && card.getAttribute('data-sid')) {
+    var id = parseInt(card.getAttribute('data-sid'));
+    if(svcSel[id]) delete svcSel[id]; else svcSel[id]=1;
+    renderServicios(); renderSidebar();
+  }
+});
+
+// TABS
+document.getElementById('tab-prog').addEventListener('click', function(){
+  modo='prog'; progSel=null; svcSel={};
+  this.className='tab activo';
+  document.getElementById('tab-ind').className='tab';
+  document.getElementById('zona-prog').style.display='block';
+  document.getElementById('zona-ind').style.display='none';
+  renderProgramas(); renderServicios(); renderSidebar();
+});
+document.getElementById('tab-ind').addEventListener('click', function(){
+  modo='ind'; progSel=null; svcSel={};
+  this.className='tab activo';
+  document.getElementById('tab-prog').className='tab';
+  document.getElementById('zona-prog').style.display='none';
+  document.getElementById('zona-ind').style.display='block';
+  renderProgramas(); renderServicios(); renderSidebar();
+});
+
+// NAVEGACION
+document.getElementById('btn-continuar').addEventListener('click', function(){
+  var err = document.getElementById('err0');
+  if(modo==='prog' && !progSel){ err.style.display='block'; return; }
+  if(modo==='ind' && Object.keys(svcSel).length===0){ err.style.display='block'; return; }
+  err.style.display='none';
+  irA(1);
+});
+document.getElementById('btn-volver1').addEventListener('click', function(){ irA(0); });
+document.getElementById('btn-paso2').addEventListener('click', function(){
+  var nombre=document.getElementById('f-nombre').value.trim();
+  var inst=document.getElementById('f-inst').value.trim();
+  var email=document.getElementById('f-email').value.trim();
+  var err=document.getElementById('err1');
+  if(!nombre){ err.textContent='El nombre del contacto es obligatorio.'; err.style.display='block'; return; }
+  if(!inst){ err.textContent='El nombre del establecimiento es obligatorio.'; err.style.display='block'; return; }
+  if(!email||!email.includes('@')){ err.textContent='Ingresa un email valido.'; err.style.display='block'; return; }
+  err.style.display='none';
+  construirPreview();
+  irA(2);
+});
+document.getElementById('btn-volver2').addEventListener('click', function(){ irA(1); });
+document.getElementById('btn-pdf').addEventListener('click', generarPDF);
 </script>
 </body>
 </html>
