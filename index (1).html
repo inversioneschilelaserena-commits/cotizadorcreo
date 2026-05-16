@@ -760,18 +760,31 @@ function pickProg(id){
 function toggleSvc(id){selInd[id]?delete selInd[id]:(selInd[id]=1);renderServices();renderSidebar()}
 function chqty(e,id,delta){e.stopPropagation();selInd[id]=Math.max(1,(selInd[id]||1)+delta);renderServices();renderSidebar()}
 
+function showError(msg){
+  let el=document.getElementById('step-error');
+  if(!el){
+    el=document.createElement('div');
+    el.id='step-error';
+    el.style.cssText='background:#fee;border:1.5px solid #f99;border-radius:10px;padding:10px 14px;font-size:13px;color:#c00;font-weight:600;margin-bottom:14px;display:none;';
+    document.getElementById('step-0').insertBefore(el, document.getElementById('step-0').querySelector('.btn-row'));
+  }
+  el.textContent=msg;
+  el.style.display='block';
+  setTimeout(()=>el.style.display='none', 4000);
+}
+
 function goStep(n){
   if(n===1){
-    if(mode==='prog'&&!selProg){alert('Por favor selecciona un programa.');return}
-    if(mode==='ind'&&Object.keys(selInd).length===0){alert('Por favor selecciona al menos un servicio.');return}
+    if(mode==='prog'&&!selProg){showError('Por favor selecciona un programa para continuar.');return}
+    if(mode==='ind'&&Object.keys(selInd).length===0){showError('Por favor selecciona al menos un servicio.');return}
   }
   if(n===2){
     const name=document.getElementById('f-name').value.trim();
     const inst=document.getElementById('f-inst').value.trim();
     const email=document.getElementById('f-email').value.trim();
-    if(!name){alert('El nombre del contacto es obligatorio.');return}
-    if(!inst){alert('El nombre del establecimiento es obligatorio.');return}
-    if(!email||!email.includes('@')){alert('Ingresa un email válido.');return}
+    if(!name){showError('El nombre del contacto es obligatorio.');return}
+    if(!inst){showError('El nombre del establecimiento es obligatorio.');return}
+    if(!email||!email.includes('@')){showError('Ingresa un email valido.');return}
     buildPreview();
   }
   [0,1,2].forEach(i=>{
