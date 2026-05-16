@@ -619,13 +619,13 @@ const clp=n=>'$'+Math.round(n).toLocaleString('es-CL');
 
 function renderPrograms(){
   document.getElementById('prog-list').innerHTML=programs.map(p=>`
-    <div class="prog-card${selProg===p.id?' selected':''}" onclick="pickProg('${p.id}')" tabindex="0" role="button" aria-pressed="${selProg===p.id}">
+    <div class="prog-card${selProg===p.id?' selected':''}" data-progid="${p.id}" tabindex="0" role="button" aria-pressed="${selProg===p.id}" style="cursor:pointer;user-select:none">
       <div class="prog-card-top">
-        <div>
-          <div class="prog-name">${p.name}${p.popular?' <span style="font-size:11px;color:var(--or);font-weight:600">⭐ Más elegido</span>':''}</div>
+        <div style="flex:1">
+          <div class="prog-name">${p.name}${p.popular?' <span style="font-size:11px;color:var(--teal);font-weight:600"> Mas elegido</span>':''}</div>
         </div>
-        <div style="display:flex;align-items:center;gap:6px">
-          <div class="prog-disc">−${p.disc}%</div>
+        <div style="display:flex;align-items:center;gap:6px;pointer-events:none">
+          <div class="prog-disc">-${p.disc}%</div>
           <div class="prog-check"><i class="ti ti-check"></i></div>
         </div>
       </div>
@@ -633,26 +633,56 @@ function renderPrograms(){
       <div class="prog-price-row">
         <span class="prog-orig">${clp(p.orig)}</span>
         <span class="prog-final">${clp(p.final)}</span>
-        <span class="prog-save">→ ahorras ${clp(p.orig-p.final)}</span>
+        <span class="prog-save">ahorras ${clp(p.orig-p.final)}</span>
       </div>
     </div>`).join('');
+
+  // event delegation para clicks en tarjetas
+  document.getElementById('prog-list').onclick=function(e){
+    const card=e.target.closest('[data-progid]');
+    if(card){
+      const id=card.getAttribute('data-progid');
+      selProg=(selProg===id)?null:id;
+      renderPrograms();
+      renderSidebar();
+    }
+  };
 }
 
 function renderServices(){
   document.getElementById('svc-list').innerHTML=services.map(s=>`
-    <div class="svc-card${selInd[s.id]?' selected':''}" onclick="toggleSvc(${s.id})" tabindex="0" role="button" aria-pressed="${!!selInd[s.id]}">
+    <div class="svc-card${selInd[s.id]?' selected':''}" data-svcid="${s.id}" tabindex="0" role="button" style="cursor:pointer;user-select:none">
       <div class="svc-check"><i class="ti ti-check"></i></div>
       <div class="svc-icon"><i class="ti ${s.icon}"></i></div>
       <div class="svc-name">${s.name}</div>
       <div class="svc-desc">${s.desc}</div>
       <div class="svc-price">${clp(s.price)} / ${s.unit}</div>
       ${selInd[s.id]?`
-        <div class="qty-row" onclick="event.stopPropagation()">
-          <button class="qty-btn" onclick="chqty(event,${s.id},-1)" aria-label="Reducir">−</button>
+        <div class="qty-row" data-qtyrow="1">
+          <button class="qty-btn" data-qtyid="${s.id}" data-qtydelta="-1">-</button>
           <span class="qty-num">${selInd[s.id]}</span>
-          <button class="qty-btn" onclick="chqty(event,${s.id},1)" aria-label="Aumentar">+</button>
+          <button class="qty-btn" data-qtyid="${s.id}" data-qtydelta="1">+</button>
           <span class="qty-unit">${s.unit}${selInd[s.id]>1?'s':''}</span>
         </div>`:''}`).join('');
+
+  document.getElementById('svc-list').onclick=function(e){
+    // qty buttons
+    const qbtn=e.target.closest('[data-qtyid]');
+    if(qbtn){
+      e.stopPropagation();
+      const id=parseInt(qbtn.getAttribute('data-qtyid'));
+      const delta=parseInt(qbtn.getAttribute('data-qtydelta'));
+      selInd[id]=Math.max(1,(selInd[id]||1)+delta);
+      renderServices();renderSidebar();return;
+    }
+    // card toggle
+    const card=e.target.closest('[data-svcid]');
+    if(card){
+      const id=parseInt(card.getAttribute('data-svcid'));
+      if(selInd[id]) delete selInd[id]; else selInd[id]=1;
+      renderServices();renderSidebar();
+    }
+  };
 }
 
 function renderSidebar(){
@@ -722,7 +752,11 @@ function setTab(t){
   renderAll();
 }
 
-function pickProg(id){selProg=selProg===id?null:id;renderPrograms();renderSidebar()}
+function pickProg(id){
+  selProg=(selProg===id)?null:id;
+  renderPrograms();
+  renderSidebar();
+}
 function toggleSvc(id){selInd[id]?delete selInd[id]:(selInd[id]=1);renderServices();renderSidebar()}
 function chqty(e,id,delta){e.stopPropagation();selInd[id]=Math.max(1,(selInd[id]||1)+delta);renderServices();renderSidebar()}
 
