@@ -619,7 +619,7 @@ const clp=n=>'$'+Math.round(n).toLocaleString('es-CL');
 
 function renderPrograms(){
   document.getElementById('prog-list').innerHTML=programs.map(p=>`
-    <div class="prog-card${selProg===p.id?' selected':''}" data-progid="${p.id}" tabindex="0" role="button" aria-pressed="${selProg===p.id}" style="cursor:pointer;user-select:none">
+    <div class="prog-card${selProg===p.id?' selected':''}" data-progid="${p.id}" tabindex="0" role="button" style="cursor:pointer;user-select:none">
       <div class="prog-card-top">
         <div style="flex:1">
           <div class="prog-name">${p.name}${p.popular?' <span style="font-size:11px;color:var(--teal);font-weight:600"> Mas elegido</span>':''}</div>
@@ -636,17 +636,6 @@ function renderPrograms(){
         <span class="prog-save">ahorras ${clp(p.orig-p.final)}</span>
       </div>
     </div>`).join('');
-
-  // event delegation para clicks en tarjetas
-  document.getElementById('prog-list').onclick=function(e){
-    const card=e.target.closest('[data-progid]');
-    if(card){
-      const id=card.getAttribute('data-progid');
-      selProg=(selProg===id)?null:id;
-      renderPrograms();
-      renderSidebar();
-    }
-  };
 }
 
 function renderServices(){
@@ -664,25 +653,6 @@ function renderServices(){
           <button class="qty-btn" data-qtyid="${s.id}" data-qtydelta="1">+</button>
           <span class="qty-unit">${s.unit}${selInd[s.id]>1?'s':''}</span>
         </div>`:''}`).join('');
-
-  document.getElementById('svc-list').onclick=function(e){
-    // qty buttons
-    const qbtn=e.target.closest('[data-qtyid]');
-    if(qbtn){
-      e.stopPropagation();
-      const id=parseInt(qbtn.getAttribute('data-qtyid'));
-      const delta=parseInt(qbtn.getAttribute('data-qtydelta'));
-      selInd[id]=Math.max(1,(selInd[id]||1)+delta);
-      renderServices();renderSidebar();return;
-    }
-    // card toggle
-    const card=e.target.closest('[data-svcid]');
-    if(card){
-      const id=parseInt(card.getAttribute('data-svcid'));
-      if(selInd[id]) delete selInd[id]; else selInd[id]=1;
-      renderServices();renderSidebar();
-    }
-  };
 }
 
 function renderSidebar(){
@@ -974,22 +944,54 @@ function genPDF(){
   },100);
 }
 
-document.addEventListener('keydown',e=>{
-  if(e.key==='Enter'&&(e.target.classList.contains('prog-card')||e.target.classList.contains('svc-card')))e.target.click();
+document.addEventListener('DOMContentLoaded', function(){
+
+  renderAll();
+
+  // TABS
+  document.getElementById('tab-prog').addEventListener('click', function(){ setTab('prog'); });
+  document.getElementById('tab-ind').addEventListener('click', function(){ setTab('ind'); });
+
+  // NAVEGACION
+  document.getElementById('btn-continuar').addEventListener('click', function(){ goStep(1); });
+  document.getElementById('btn-volver1').addEventListener('click', function(){ goStep(0); });
+  document.getElementById('btn-paso2').addEventListener('click', function(){ goStep(2); });
+  document.getElementById('btn-volver2').addEventListener('click', function(){ goStep(1); });
+  document.getElementById('btn-pdf').addEventListener('click', function(){ genPDF(); });
+
+  // PROGRAMAS - delegacion desde el contenedor padre estático
+  document.getElementById('view-prog').addEventListener('click', function(e){
+    var card = e.target.closest('[data-progid]');
+    if(card){
+      var id = card.getAttribute('data-progid');
+      selProg = (selProg === id) ? null : id;
+      renderPrograms();
+      renderSidebar();
+    }
+  });
+
+  // SERVICIOS - delegacion desde el contenedor padre estático
+  document.getElementById('view-ind').addEventListener('click', function(e){
+    var qbtn = e.target.closest('[data-qtyid]');
+    if(qbtn){
+      e.stopPropagation();
+      var id = parseInt(qbtn.getAttribute('data-qtyid'));
+      var delta = parseInt(qbtn.getAttribute('data-qtydelta'));
+      selInd[id] = Math.max(1, (selInd[id]||1) + delta);
+      renderServices();
+      renderSidebar();
+      return;
+    }
+    var card = e.target.closest('[data-svcid]');
+    if(card){
+      var id2 = parseInt(card.getAttribute('data-svcid'));
+      if(selInd[id2]) delete selInd[id2]; else selInd[id2] = 1;
+      renderServices();
+      renderSidebar();
+    }
+  });
+
 });
-
-// Botones navegación
-document.getElementById('btn-continuar').addEventListener('click',()=>goStep(1));
-document.getElementById('btn-volver1').addEventListener('click',()=>goStep(0));
-document.getElementById('btn-paso2').addEventListener('click',()=>goStep(2));
-document.getElementById('btn-volver2').addEventListener('click',()=>goStep(1));
-document.getElementById('btn-pdf').addEventListener('click',genPDF);
-
-// Tabs
-document.getElementById('tab-prog').addEventListener('click',()=>setTab('prog'));
-document.getElementById('tab-ind').addEventListener('click',()=>setTab('ind'));
-
-renderAll();
 </script>
 </body>
 </html>
